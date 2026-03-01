@@ -660,6 +660,27 @@ footer {
   gap: 4px;
   margin-bottom: 22px;
 }
+.result-dex-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 2px;
+}
+.result-dex-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.result-dex-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--cyan);
+  margin-bottom: 2px;
+}
 .result-label {
   font-family: 'DM Mono', monospace;
   font-size: 11px;
@@ -947,6 +968,10 @@ footer {
         <div class="card-bg-img" id="cardBgImg"></div>
         <div class="result-tier" id="resTier">—</div>
         <div class="result-main">
+          <div class="result-dex-row">
+            <img class="result-dex-logo" id="resDexLogo" src="assets/logo_nado.jpeg" alt="">
+            <span class="result-dex-name" id="resDexName">Nado</span>
+          </div>
           <span class="result-label">Your potential airdrop</span>
           <span class="result-value" id="resAirdrop">$0</span>
         </div>
@@ -1427,6 +1452,18 @@ requestAnimationFrame(animate);
     grvt: 'GRVT', ethereal: 'Ethereal', edgex: 'EdgeX',
   };
 
+  const DEX_LOGOS = {
+    nado:        'assets/logo_nado.jpeg',
+    variational: 'assets/logo_variational.png',
+    treadfi:     'assets/logo_treadfi.png',
+    '01exchange':'assets/logo_01exchange.jpeg',
+    extended:    'assets/logo_extended.png',
+    pacifica:    'assets/logo_pacifica.png',
+    grvt:        'assets/logo_grvt.png',
+    ethereal:    'assets/logo_ethereal.png',
+    edgex:       'assets/logo_edgex.png',
+  };
+
   let activeDex = 'nado';
 
   const inpMyPoints    = document.getElementById('inp-mypoints');
@@ -1446,6 +1483,11 @@ requestAnimationFrame(animate);
     inpFdv.value    = p.fdv;
     inpTotal.value  = p.totalPoints;
     inpSupply.value = p.supplyPct;
+    document.getElementById('resDexName').textContent = DEX_LABELS[dex] || dex;
+    const logoEl = document.getElementById('resDexLogo');
+    const logoSrc = DEX_LOGOS[dex];
+    if (logoSrc) { logoEl.src = logoSrc; logoEl.style.display = 'block'; }
+    else { logoEl.style.display = 'none'; }
     calculate();
   }
 
@@ -1493,6 +1535,7 @@ requestAnimationFrame(animate);
     resTier.textContent    = tier.label;
     resTier.className      = 'result-tier ' + tier.cls;
     resultCard.classList.toggle('has-value', airdropUsd > 0 && myPts > 0);
+    document.getElementById('resDexName').textContent = DEX_LABELS[activeDex] || activeDex;
   }
 
   // Tab switching

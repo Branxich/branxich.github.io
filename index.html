@@ -1010,8 +1010,8 @@ footer {
             <span class="stat-val" id="resPool">—</span>
           </div>
           <div class="result-stat">
-            <span class="stat-label">Your Share</span>
-            <span class="stat-val" id="resShare">—</span>
+            <span class="stat-label">My Points</span>
+            <span class="stat-val" id="resMyPoints">—</span>
           </div>
           <div class="result-stat">
             <span class="stat-label">Price per Point</span>
@@ -1546,7 +1546,7 @@ requestAnimationFrame(animate);
     if (!total || !fdv || !supply) {
       resAirdrop.textContent = '$0';
       resPool.textContent    = '—';
-      resShare.textContent   = '—';
+      document.getElementById('resMyPoints').textContent = '—';
       resPrice.textContent   = '—';
       document.getElementById('resSupply').textContent = '—';
       resTier.textContent    = '—';
@@ -1562,7 +1562,7 @@ requestAnimationFrame(animate);
 
     resAirdrop.textContent = '$' + fmt(airdropUsd, 0);
     resPool.textContent    = '$' + fmt(poolUsd / 1e6, 2) + 'M';
-    resShare.textContent   = (share * 100).toFixed(4) + '%';
+    document.getElementById('resMyPoints').textContent = myPts > 0 ? fmt(myPts, 0) : '—';
     resPrice.textContent   = '$' + pricePerPt.toFixed(2);
     document.getElementById('resSupply').textContent = supply + '%';
 

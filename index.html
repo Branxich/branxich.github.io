@@ -880,6 +880,49 @@ footer {
   text-shadow: 0 0 8px rgba(0,234,255,.6);
 }
 
+.template-upload {
+  background: rgba(255,255,255,.03);
+  border: 1.5px dashed rgba(255,255,255,.18) !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .2s, background .2s;
+}
+.template-upload:hover {
+  border-color: rgba(0,234,255,.4) !important;
+  background: rgba(0,234,255,.04);
+  transform: scale(1.03);
+}
+.template-upload.selected { border-color: var(--cyan) !important; }
+.upload-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
+}
+.upload-inner span {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .06em;
+  color: rgba(255,255,255,.35);
+  text-transform: uppercase;
+}
+.upload-inner.hidden { display: none; }
+.template-upload .preview-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  display: none;
+}
+.template-upload .preview-img.visible { display: block; }
+
 @media(max-width:480px) {
   .calc-fields { grid-template-columns: 1fr; }
   .result-stats { grid-template-columns: 1fr 1fr; }
@@ -1056,6 +1099,14 @@ footer {
         <button class="modal-close" id="modalClose">✕</button>
         <p class="modal-title">Choose Card Background</p>
         <div class="template-grid" id="templateGrid">
+          <div class="template-slot template-upload" id="uploadSlot">
+            <input type="file" id="customPhotoInput" accept="image/*" style="display:none">
+            <img class="preview-img" id="uploadPreview" alt="Custom">
+            <div class="upload-inner" id="uploadInner">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Your photo</span>
+            </div>
+          </div>
           <div class="template-slot" data-template="assets/templates/template_1.png"><img src="assets/templates/template_1.png" alt="Template 1"></div>
           <div class="template-slot" data-template="assets/templates/template_2.png"><img src="assets/templates/template_2.png" alt="Template 2"></div>
           <div class="template-slot" data-template="assets/templates/template_3.png"><img src="assets/templates/template_3.png" alt="Template 3"></div>
@@ -1620,6 +1671,36 @@ requestAnimationFrame(animate);
       document.getElementById('imageModal').classList.remove('open');
   });
 
+  // Custom photo upload slot
+  let customPhotoUrl = null;
+  const uploadSlot    = document.getElementById('uploadSlot');
+  const customInput   = document.getElementById('customPhotoInput');
+  const uploadPreview = document.getElementById('uploadPreview');
+  const uploadInner   = document.getElementById('uploadInner');
+
+  uploadSlot.addEventListener('click', () => customInput.click());
+
+  customInput.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    customPhotoUrl = url;
+    uploadPreview.src = url;
+    uploadPreview.classList.add('visible');
+    uploadInner.classList.add('hidden');
+
+    // Select this slot
+    document.querySelectorAll('.template-slot').forEach(s => s.classList.remove('selected'));
+    uploadSlot.classList.add('selected');
+    selectedTemplate = url;
+
+    cardBgImg.style.backgroundImage = `url('${url}')`;
+    cardBgImg.classList.add('visible');
+    btnDownload.style.display = 'flex';
+
+    setTimeout(() => document.getElementById('imageModal').classList.remove('open'), 300);
+  });
+
   // Template selection → apply to result card background
   let selectedTemplate = null;
   const btnDownload = document.getElementById('btnDownload');
@@ -1670,9 +1751,14 @@ requestAnimationFrame(animate);
     // Load bg via fetch to avoid CORS taint
     let bgBitmap;
     try {
-      const resp = await fetch(selectedTemplate);
-      const blob = await resp.blob();
-      bgBitmap = await createImageBitmap(blob);
+      if (selectedTemplate.startsWith('blob:')) {
+        // Local file — load directly
+        bgBitmap = await createImageBitmap(await fetch(selectedTemplate).then(r => r.blob()));
+      } else {
+        const resp = await fetch(selectedTemplate);
+        const blob = await resp.blob();
+        bgBitmap = await createImageBitmap(blob);
+      }
     } catch(e) {
       alert('Could not load template. Make sure assets/templates/ exists on the server.');
       return;

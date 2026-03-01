@@ -1644,7 +1644,8 @@ requestAnimationFrame(animate);
     const supplyVal = document.getElementById('resSupply').textContent;
     const tierText  = resTier.textContent;
 
-    const W = 1200, H = 675;
+    const cw = 760, ch = 400;
+    const W = cw, H = ch;
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
@@ -1660,28 +1661,22 @@ requestAnimationFrame(animate);
       return;
     }
 
-    // Dark canvas background
-    ctx.fillStyle = '#0a0a0e';
-    ctx.fillRect(0, 0, W, H);
-
-    // Card panel
+    const rx = 0, ry = 0;
     const cx = W / 2, cy = H / 2;
-    const cw = 760, ch = 400;
-    const rx = cx - cw/2, ry = cy - ch/2;
 
     // Clip to card shape, draw template image inside
     ctx.save();
-    roundRect(ctx, rx, ry, cw, ch, 24);
+    roundRect(ctx, 0, 0, W, H, 24);
     ctx.clip();
-    ctx.drawImage(bgBitmap, rx, ry, cw, ch);
+    ctx.drawImage(bgBitmap, 0, 0, W, H);
     // Dark overlay inside card
     ctx.fillStyle = 'rgba(10,10,14,0.78)';
-    ctx.fillRect(rx, ry, cw, ch);
+    ctx.fillRect(0, 0, W, H);
     ctx.restore();
 
     // Card border
     ctx.save();
-    roundRect(ctx, rx, ry, cw, ch, 24);
+    roundRect(ctx, 0, 0, W, H, 24);
     ctx.strokeStyle = 'rgba(0,234,255,0.4)';
     ctx.lineWidth = 1.5;
     ctx.stroke();

@@ -1664,14 +1664,27 @@ requestAnimationFrame(animate);
     const rx = 0, ry = 0;
     const cx = W / 2, cy = H / 2;
 
-    // Clip to card shape, draw template image inside
+    // Clip to card shape
     ctx.save();
     roundRect(ctx, 0, 0, W, H, 24);
     ctx.clip();
-    ctx.drawImage(bgBitmap, 0, 0, W, H);
-    // Dark overlay inside card
-    ctx.fillStyle = 'rgba(10,10,14,0.78)';
+
+    // Draw template image at natural aspect ratio, anchored to right
+    const imgAspect = bgBitmap.width / bgBitmap.height;
+    const drawH = H;
+    const drawW = drawH * imgAspect;
+    const drawX = W - drawW; // anchor right
+    ctx.drawImage(bgBitmap, drawX, 0, drawW, drawH);
+
+    // Fade left: gradient overlay darkening the left portion
+    const fadeGrad = ctx.createLinearGradient(0, 0, W, 0);
+    fadeGrad.addColorStop(0,   'rgba(10,10,14,1)');
+    fadeGrad.addColorStop(0.45,'rgba(10,10,14,0.92)');
+    fadeGrad.addColorStop(0.72,'rgba(10,10,14,0.55)');
+    fadeGrad.addColorStop(1,   'rgba(10,10,14,0.15)');
+    ctx.fillStyle = fadeGrad;
     ctx.fillRect(0, 0, W, H);
+
     ctx.restore();
 
     // Card border

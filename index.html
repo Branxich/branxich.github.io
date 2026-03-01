@@ -1652,11 +1652,17 @@ requestAnimationFrame(animate);
     const supplyVal = document.getElementById('resSupply').textContent;
     const tierText  = resTier.textContent;
 
-    const cw = 760, ch = 400;
-    const W = cw, H = ch;
+    // Match exact card size from DOM
+    const cardEl = document.getElementById('resultCard');
+    const cardRect = cardEl.getBoundingClientRect();
+    const SCALE = 2; // 2x for sharpness
+    const cw = Math.round(cardRect.width);
+    const ch = Math.round(cardRect.height);
+    const W = cw * SCALE, H = ch * SCALE;
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
+    ctx.scale(SCALE, SCALE); // all drawing in CSS px coords
 
     // Load bg via fetch to avoid CORS taint
     let bgBitmap;
@@ -1670,22 +1676,23 @@ requestAnimationFrame(animate);
     }
 
     const rx = 0, ry = 0;
-    const cx = W / 2, cy = H / 2;
+    // Use CSS pixel dimensions for drawing (ctx is scaled 2x)
+    const CW = cw, CH = ch;
 
     // Clip to card shape
     ctx.save();
-    roundRect(ctx, 0, 0, W, H, 24);
+    roundRect(ctx, 0, 0, CW, CH, 20);
     ctx.clip();
 
     // Draw template image at natural aspect ratio, anchored to right
     const imgAspect = bgBitmap.width / bgBitmap.height;
-    const drawH = H;
+    const drawH = CH;
     const drawW = drawH * imgAspect;
-    const drawX = W - drawW; // anchor right
+    const drawX = CW - drawW;
     ctx.drawImage(bgBitmap, drawX, 0, drawW, drawH);
 
-    // Fade left: gradient overlay darkening the left portion
-    const fadeGrad = ctx.createLinearGradient(0, 0, W, 0);
+    // Fade left gradient
+    const fadeGrad = ctx.createLinearGradient(0, 0, CW, 0);
     fadeGrad.addColorStop(0,    'rgba(10,10,14,1)');
     fadeGrad.addColorStop(0.35, 'rgba(10,10,14,0.98)');
     fadeGrad.addColorStop(0.55, 'rgba(10,10,14,0.85)');
@@ -1693,84 +1700,115 @@ requestAnimationFrame(animate);
     fadeGrad.addColorStop(0.85, 'rgba(10,10,14,0.25)');
     fadeGrad.addColorStop(1,    'rgba(10,10,14,0.05)');
     ctx.fillStyle = fadeGrad;
-    ctx.fillRect(0, 0, W, H);
-
+    ctx.fillRect(0, 0, CW, CH);
     ctx.restore();
 
     // Card border
     ctx.save();
-    roundRect(ctx, 0, 0, W, H, 24);
+    roundRect(ctx, 0, 0, CW, CH, 20);
     ctx.strokeStyle = 'rgba(0,234,255,0.4)';
-    ctx.lineWidth = 1.5;
+    ctx.lineWidth = 1;
     ctx.stroke();
     ctx.restore();
 
-    // branxi.app badge (top right)
-    ctx.font = '500 14px monospace';
+    // Grab computed font sizes from DOM elements for pixel-perfect match
+    const tierEl    = document.getElementById('resTier');
+    const dexNameEl = document.getElementById('resDexName');
+    const labelEl   = document.querySelector('.result-label');
+    const valueEl   = document.getElementById('resAirdrop');
+    const brandEl   = document.querySelector('.result-brand');
+
+    const pad = 28; // matches card padding
+
+    // branxi.app badge
+    ctx.font = `500 ${parseFloat(getComputedStyle(brandEl).fontSize)}px monospace`;
     ctx.fillStyle = 'rgba(255,255,255,0.3)';
     ctx.textAlign = 'right';
-    ctx.fillText('branxi.app', rx + cw - 24, ry + 34);
+    ctx.fillText('branxi.app', CW - pad + 6, pad - 4);
 
     // Tier
-    ctx.font = '600 13px monospace';
-    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.font = `600 ${parseFloat(getComputedStyle(tierEl).fontSize)}px monospace`;
+    ctx.fillStyle = getComputedStyle(tierEl).color;
     ctx.textAlign = 'left';
-    ctx.fillText(tierText, rx + 32, ry + 34);
+    ctx.fillText(tierText, pad, pad - 4);
 
-    // DEX name
-    ctx.font = '700 26px sans-serif';
+    // DEX logo + name row
+    const logoEl = document.getElementById('resDexLogo');
+    const logoSize = 20;
+    const nameFS = parseFloat(getComputedStyle(dexNameEl).fontSize);
+    const rowY = pad + 24;
+
+    if (logoEl && logoEl.src && logoEl.complete) {
+      try {
+        const logoBmp = await createImageBitmap(await (await fetch(logoEl.src)).blob());
+        ctx.drawImage(logoBmp, pad, rowY - logoSize + 2, logoSize, logoSize);
+      } catch(e) {}
+    }
+    ctx.font = `700 ${nameFS}px sans-serif`;
     ctx.fillStyle = '#00eaff';
     ctx.textAlign = 'left';
-    ctx.fillText(dexLabel, rx + 32, ry + 80);
+    ctx.fillText(dexLabel, pad + logoSize + 8, rowY + 2);
 
-    // Airdrop label
-    ctx.font = '500 13px monospace';
+    // "YOUR POTENTIAL AIRDROP" label
+    const labelFS = parseFloat(getComputedStyle(labelEl).fontSize);
+    ctx.font = `500 ${labelFS}px monospace`;
     ctx.fillStyle = 'rgba(255,255,255,0.35)';
-    ctx.fillText('YOUR POTENTIAL AIRDROP', rx + 32, ry + 116);
+    ctx.fillText('YOUR POTENTIAL AIRDROP', pad, rowY + nameFS + 10);
 
     // Airdrop value
-    ctx.font = '800 80px sans-serif';
+    const valueFS = parseFloat(getComputedStyle(valueEl).fontSize);
+    ctx.font = `800 ${valueFS}px sans-serif`;
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(airdrop, rx + 28, ry + 216);
+    ctx.fillText(airdrop, pad - 2, rowY + nameFS + 10 + valueFS + 4);
 
-    // Divider
-    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    // Stats section — measure from DOM
+    const statsEl = document.querySelector('.result-stats');
+    const statsRect = statsEl.getBoundingClientRect();
+    const statsTop = statsRect.top - cardRect.top;
+
+    // Divider line
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
     ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.moveTo(rx + 32, ry + 248); ctx.lineTo(rx + cw - 32, ry + 248);
+    ctx.moveTo(pad, statsTop - 20); ctx.lineTo(CW - pad, statsTop - 20);
     ctx.stroke();
 
-    // Stats (4 boxes)
-    const stats = [
-      { label: 'TOTAL POOL',    val: pool     },
-      { label: 'MY POINTS',     val: myPtsVal },
-      { label: 'PRICE/POINT',   val: price    },
-      { label: 'AIRDROP SUPPLY',val: supplyVal},
-    ];
-    const boxGap = 14, boxCount = 4;
-    const boxW = (cw - 64 - boxGap * (boxCount - 1)) / boxCount;
-    stats.forEach((s, i) => {
-      const bx = rx + 32 + i * (boxW + boxGap);
-      const by = ry + 268;
-      const bh = 88;
-      // box bg
+    // Stat boxes
+    const statEls = document.querySelectorAll('.result-stat');
+    const statLabels = ['TOTAL POOL','MY POINTS','PRICE/POINT','AIRDROP SUPPLY'];
+    const statVals   = [pool, myPtsVal, price, supplyVal];
+    const boxGap = 10;
+    const boxCount = 4;
+    const boxW = (CW - pad * 2 - boxGap * (boxCount - 1)) / boxCount;
+    const boxH = CH - statsTop - pad + 20;
+
+    statEls.forEach((el, i) => {
+      const elRect = el.getBoundingClientRect();
+      const bx = elRect.left - cardRect.left;
+      const by = elRect.top  - cardRect.top;
+      const bw = elRect.width;
+      const bh = elRect.height;
+
       ctx.save();
-      roundRect(ctx, bx, by, boxW, bh, 10);
+      roundRect(ctx, bx, by, bw, bh, 10);
       ctx.fillStyle = 'rgba(255,255,255,0.04)';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
       ctx.lineWidth = 1;
       ctx.stroke();
       ctx.restore();
-      // label
-      ctx.font = '500 10px monospace';
+
+      const labelFS2 = parseFloat(getComputedStyle(el.querySelector('.stat-label')).fontSize);
+      const valFS2   = parseFloat(getComputedStyle(el.querySelector('.stat-val')).fontSize);
+
+      ctx.font = `500 ${labelFS2}px monospace`;
       ctx.fillStyle = 'rgba(255,255,255,0.28)';
       ctx.textAlign = 'center';
-      ctx.fillText(s.label, bx + boxW/2, by + 24);
-      // value
-      ctx.font = '700 18px monospace';
+      ctx.fillText(statLabels[i], bx + bw/2, by + labelFS2 + 8);
+
+      ctx.font = `700 ${valFS2}px monospace`;
       ctx.fillStyle = 'rgba(255,255,255,0.85)';
-      ctx.fillText(s.val, bx + boxW/2, by + 58);
+      ctx.fillText(statVals[i], bx + bw/2, by + bh - 10);
     });
 
     // Download

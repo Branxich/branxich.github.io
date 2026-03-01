@@ -778,7 +778,15 @@ footer {
   background: rgba(255,255,255,.1);
   color: #fff;
 }
-.btn-share {
+.btn-download {
+  background: linear-gradient(135deg, rgba(0,234,255,.1), rgba(170,0,255,.1));
+  border: 1px solid rgba(0,234,255,.2);
+  color: rgba(255,255,255,.7);
+}
+.btn-download:hover {
+  background: linear-gradient(135deg, rgba(0,234,255,.18), rgba(170,0,255,.18));
+  color: #fff;
+}
   background: linear-gradient(135deg, rgba(0,234,255,.15), rgba(170,0,255,.15));
   border: 1px solid rgba(0,234,255,.25);
   color: var(--cyan);
@@ -1030,6 +1038,10 @@ footer {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
           Create Image
         </button>
+        <button class="calc-btn btn-download" id="btnDownload" style="display:none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </button>
         <button class="calc-btn btn-share" id="btnShareX">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
           Share on X
@@ -1050,11 +1062,8 @@ footer {
           <div class="template-slot" data-template="assets/templates/template_5.png"><img src="assets/templates/template_5.png" alt="Template 5"></div>
           <div class="template-slot" data-template="assets/templates/template_6.png"><img src="assets/templates/template_6.png" alt="Template 6"></div>
           <div class="template-slot" data-template="assets/templates/template_7.png"><img src="assets/templates/template_7.png" alt="Template 7"></div>
+          <div class="template-slot" data-template="assets/templates/template_8.png"><img src="assets/templates/template_8.png" alt="Template 8"></div>
         </div>
-        <button class="calc-btn btn-share" id="btnDownload" style="margin-top:24px; width:100%; justify-content:center; opacity:.4; cursor:not-allowed;" disabled>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download Card
-        </button>
       </div>
     </div>
   </div><!-- /page-airdrop -->
@@ -1624,9 +1633,8 @@ requestAnimationFrame(animate);
     cardBgImg.style.backgroundImage = `url('${selectedTemplate}')`;
     cardBgImg.classList.add('visible');
 
-    btnDownload.disabled = false;
-    btnDownload.style.opacity = '1';
-    btnDownload.style.cursor = 'pointer';
+    // Show download button
+    btnDownload.style.display = 'flex';
 
     // Close modal after short delay
     setTimeout(() => document.getElementById('imageModal').classList.remove('open'), 300);

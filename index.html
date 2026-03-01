@@ -1660,21 +1660,28 @@ requestAnimationFrame(animate);
       return;
     }
 
-    // Background
-    ctx.drawImage(bgBitmap, 0, 0, W, H);
-
-    // Dark overlay
-    ctx.fillStyle = 'rgba(0,0,0,0.42)';
+    // Dark canvas background
+    ctx.fillStyle = '#0a0a0e';
     ctx.fillRect(0, 0, W, H);
 
     // Card panel
     const cx = W / 2, cy = H / 2;
     const cw = 760, ch = 400;
     const rx = cx - cw/2, ry = cy - ch/2;
+
+    // Clip to card shape, draw template image inside
     ctx.save();
     roundRect(ctx, rx, ry, cw, ch, 24);
-    ctx.fillStyle = 'rgba(10,10,14,0.85)';
-    ctx.fill();
+    ctx.clip();
+    ctx.drawImage(bgBitmap, rx, ry, cw, ch);
+    // Dark overlay inside card
+    ctx.fillStyle = 'rgba(10,10,14,0.78)';
+    ctx.fillRect(rx, ry, cw, ch);
+    ctx.restore();
+
+    // Card border
+    ctx.save();
+    roundRect(ctx, rx, ry, cw, ch, 24);
     ctx.strokeStyle = 'rgba(0,234,255,0.4)';
     ctx.lineWidth = 1.5;
     ctx.stroke();

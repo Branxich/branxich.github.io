@@ -115,7 +115,7 @@ header {
 /* ─── HERO ───────────────────────────────────────────────────────────── */
 .hero {
   text-align: center;
-  margin: 32px 0 56px;
+  margin: 32px 0 36px;
   padding: 0 20px;
 }
 
@@ -136,6 +136,66 @@ header {
   color: rgba(255,255,255,.38);
   letter-spacing: .1em;
   text-transform: uppercase;
+}
+
+/* ─── PILL NAV ───────────────────────────────────────────────────────── */
+.pill-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 100px;
+  padding: 5px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  margin: -24px 0 48px;
+  position: sticky;
+  top: 20px;
+  z-index: 100;
+}
+.pill-btn {
+  position: relative;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  color: rgba(255,255,255,.45);
+  background: none;
+  border: none;
+  border-radius: 100px;
+  padding: 9px 22px;
+  cursor: pointer;
+  transition: color .25s;
+  white-space: nowrap;
+  z-index: 1;
+}
+.pill-btn.active {
+  color: #fff;
+}
+.pill-indicator {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  height: calc(100% - 10px);
+  border-radius: 100px;
+  background: linear-gradient(135deg, rgba(0,234,255,.15), rgba(170,0,255,.15));
+  border: 1px solid rgba(0,234,255,.25);
+  box-shadow: 0 0 18px rgba(0,234,255,.08);
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1), width .3s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ─── SECTIONS ───────────────────────────────────────────────────────── */
+.section-page {
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+}
+.section-page.active {
+  display: flex;
 }
 
 /* ─── LOGOLOOP WRAPPER ───────────────────────────────────────────────── */
@@ -435,6 +495,323 @@ footer {
   text-align: center;
 }
 
+/* ─── AIRDROP CALCULATOR ─────────────────────────────────────────────── */
+.calc-wrap {
+  width: 100%;
+  max-width: 560px;
+  padding: 32px 28px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 24px;
+  background: rgba(10,10,14,.75);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 28px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  margin-bottom: 40px;
+}
+.calc-intro {
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: rgba(255,255,255,.4);
+  letter-spacing: .03em;
+}
+
+/* DEX tabs */
+.dex-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.dex-tab {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.4);
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 100px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: all .2s;
+}
+.dex-tab:hover { color: rgba(255,255,255,.75); border-color: rgba(255,255,255,.18); }
+.dex-tab.active {
+  color: var(--cyan);
+  background: rgba(0,234,255,.07);
+  border-color: rgba(0,234,255,.3);
+  box-shadow: 0 0 14px rgba(0,234,255,.08);
+}
+
+/* Input fields */
+.calc-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.field-group label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.35);
+}
+.field-unit {
+  color: rgba(255,255,255,.2);
+  font-size: 10px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.field-group input {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #fff;
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  -moz-appearance: textfield;
+}
+.field-group input::-webkit-outer-spin-button,
+.field-group input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.field-group input:focus {
+  border-color: rgba(0,234,255,.35);
+  box-shadow: 0 0 0 3px rgba(0,234,255,.06);
+}
+
+/* Result card */
+.result-card {
+  position: relative;
+  background: rgba(10,10,14,.85);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px;
+  padding: 28px 28px 24px;
+  overflow: hidden;
+  transition: border-color .3s;
+}
+.result-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--cyan), var(--purple));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  opacity: 0;
+  transition: opacity .4s;
+}
+.result-card.has-value::before { opacity: 1; }
+.result-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(0,234,255,.05), transparent 70%);
+  pointer-events: none;
+}
+.result-tier {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+  margin-bottom: 10px;
+}
+.result-tier.tier-plankton  { color: rgba(255,255,255,.4); }
+.result-tier.tier-shrimp    { color: #00eaff; }
+.result-tier.tier-dolphin   { color: #7b61ff; }
+.result-tier.tier-shark     { color: #ff6b35; }
+.result-tier.tier-whale     { color: #ffd700; text-shadow: 0 0 20px rgba(255,215,0,.4); }
+
+.result-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 22px;
+}
+.result-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+}
+.result-value {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(32px, 6vw, 48px);
+  font-weight: 800;
+  letter-spacing: -.02em;
+  background: linear-gradient(135deg, #fff 40%, rgba(255,255,255,.5));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.result-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,.07);
+}
+.result-stat { display: flex; flex-direction: column; gap: 5px; }
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.28);
+}
+.stat-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,.75);
+}
+
+/* Action buttons */
+.calc-actions {
+  display: flex;
+  gap: 12px;
+}
+.calc-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  border-radius: 12px;
+  padding: 14px 20px;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+}
+.btn-image {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  color: rgba(255,255,255,.8);
+}
+.btn-image:hover {
+  background: rgba(255,255,255,.1);
+  color: #fff;
+}
+.btn-share {
+  background: linear-gradient(135deg, rgba(0,234,255,.15), rgba(170,0,255,.15));
+  border: 1px solid rgba(0,234,255,.25);
+  color: var(--cyan);
+}
+.btn-share:hover {
+  background: linear-gradient(135deg, rgba(0,234,255,.22), rgba(170,0,255,.22));
+  box-shadow: 0 0 20px rgba(0,234,255,.12);
+}
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(8px);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.open { display: flex; }
+.modal-box {
+  position: relative;
+  background: #111118;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 24px;
+  padding: 32px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-close {
+  position: absolute;
+  top: 16px; right: 16px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 50%;
+  width: 32px; height: 32px;
+  color: rgba(255,255,255,.5);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-close:hover { background: rgba(255,255,255,.12); color: #fff; }
+.modal-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.4);
+  margin-bottom: 20px;
+}
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.template-slot {
+  aspect-ratio: 1.5;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,.08);
+  cursor: pointer;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+  position: relative;
+}
+.template-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+}
+.template-slot:hover {
+  border-color: rgba(255,255,255,.3);
+  transform: scale(1.03);
+}
+.template-slot.selected {
+  border-color: var(--cyan);
+  box-shadow: 0 0 16px rgba(0,234,255,.25);
+}
+.template-slot.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 6px; right: 8px;
+  font-size: 14px;
+  color: var(--cyan);
+  text-shadow: 0 0 8px rgba(0,234,255,.6);
+}
+
+@media(max-width:480px) {
+  .calc-fields { grid-template-columns: 1fr; }
+  .result-stats { grid-template-columns: 1fr 1fr; }
+  .template-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
 /* reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .loop-track { transform: none !important; }
@@ -465,18 +842,28 @@ footer {
     <p>Currently Trading On</p>
   </section>
 
-  <!-- LogoLoop-style marquee -->
-  <div class="loop-outer" id="loopOuter">
-    <div class="loop-track" id="loopTrack">
-      <!-- sequences injected by JS -->
-    </div>
-  </div>
+  <!-- Pill Navigation -->
+  <nav class="pill-nav" id="pillNav">
+    <div class="pill-indicator" id="pillIndicator"></div>
+    <button class="pill-btn active" data-page="dex">Perp DEX List</button>
+    <button class="pill-btn" data-page="airdrop">Airdrop Calculator</button>
+  </nav>
 
-  <!-- Posts Carousel -->
-  <section class="tweets-section">
-    <p class="tweets-title">Latest from X</p>
-    <div class="posts-loop-outer" id="postsOuter">
-      <div class="posts-loop-track" id="postsTrack">
+  <!-- PAGE: DEX List -->
+  <div class="section-page active" id="page-dex">
+
+    <!-- LogoLoop-style marquee -->
+    <div class="loop-outer" id="loopOuter">
+      <div class="loop-track" id="loopTrack">
+        <!-- sequences injected by JS -->
+      </div>
+    </div>
+
+    <!-- Posts Carousel -->
+    <section class="tweets-section">
+      <p class="tweets-title">Latest from X</p>
+      <div class="posts-loop-outer" id="postsOuter">
+        <div class="posts-loop-track" id="postsTrack">
 
           <a class="post-card" href="https://x.com/OG_Branxi/status/2022691127275716733" target="_blank" rel="noopener">
             <img src="assets/post_treadfi.png" alt="How to Optimize TreadFi MM Bot" draggable="false">
@@ -497,6 +884,104 @@ footer {
       </div>
     </div>
   </section>
+
+  </div><!-- /page-dex -->
+
+  <!-- PAGE: Airdrop Calculator -->
+  <div class="section-page" id="page-airdrop">
+    <div class="calc-wrap">
+      <p class="calc-intro">Calculate your potential airdrop based on your points balance.<br>Preset values are community estimates — adjust them freely.</p>
+
+      <!-- DEX Tabs -->
+      <div class="dex-tabs" id="dexTabs">
+        <button class="dex-tab active" data-dex="nado">Nado</button>
+        <button class="dex-tab" data-dex="variational">Variational</button>
+        <button class="dex-tab" data-dex="treadfi">TreadFi</button>
+        <button class="dex-tab" data-dex="01exchange">01Exchange</button>
+        <button class="dex-tab" data-dex="extended">Extended</button>
+        <button class="dex-tab" data-dex="pacifica">Pacifica</button>
+        <button class="dex-tab" data-dex="grvt">GRVT</button>
+        <button class="dex-tab" data-dex="ethereal">Ethereal</button>
+        <button class="dex-tab" data-dex="edgex">EdgeX</button>
+      </div>
+
+      <!-- Input Fields -->
+      <div class="calc-fields">
+        <div class="field-group">
+          <label>My Points</label>
+          <input type="number" id="inp-mypoints" placeholder="Enter your points" min="0">
+        </div>
+        <div class="field-group">
+          <label>FDV <span class="field-unit">(billions $)</span></label>
+          <input type="number" id="inp-fdv" step="0.01" min="0">
+        </div>
+        <div class="field-group">
+          <label>Total Points</label>
+          <input type="number" id="inp-totalpoints" min="0">
+        </div>
+        <div class="field-group">
+          <label>Airdrop % Supply</label>
+          <input type="number" id="inp-supply" step="0.1" min="0" max="100">
+        </div>
+      </div>
+
+      <!-- Result Card -->
+      <div class="result-card" id="resultCard">
+        <div class="result-tier" id="resTier">—</div>
+        <div class="result-main">
+          <span class="result-label">Your potential airdrop</span>
+          <span class="result-value" id="resAirdrop">$0</span>
+        </div>
+        <div class="result-stats">
+          <div class="result-stat">
+            <span class="stat-label">Total Airdrop Pool</span>
+            <span class="stat-val" id="resPool">—</span>
+          </div>
+          <div class="result-stat">
+            <span class="stat-label">Your Share</span>
+            <span class="stat-val" id="resShare">—</span>
+          </div>
+          <div class="result-stat">
+            <span class="stat-label">Price per Point</span>
+            <span class="stat-val" id="resPrice">—</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="calc-actions">
+        <button class="calc-btn btn-image" id="btnCreateImage">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          Create Image
+        </button>
+        <button class="calc-btn btn-share" id="btnShareX">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          Share on X
+        </button>
+      </div>
+    </div>
+
+    <!-- Create Image Modal -->
+    <div class="modal-overlay" id="imageModal">
+      <div class="modal-box">
+        <button class="modal-close" id="modalClose">✕</button>
+        <p class="modal-title">Choose Background</p>
+        <div class="template-grid" id="templateGrid">
+          <div class="template-slot" data-template="assets/templates/template_1.png"><img src="assets/templates/template_1.png" alt="Template 1"></div>
+          <div class="template-slot" data-template="assets/templates/template_2.png"><img src="assets/templates/template_2.png" alt="Template 2"></div>
+          <div class="template-slot" data-template="assets/templates/template_3.png"><img src="assets/templates/template_3.png" alt="Template 3"></div>
+          <div class="template-slot" data-template="assets/templates/template_4.png"><img src="assets/templates/template_4.png" alt="Template 4"></div>
+          <div class="template-slot" data-template="assets/templates/template_5.png"><img src="assets/templates/template_5.png" alt="Template 5"></div>
+          <div class="template-slot" data-template="assets/templates/template_6.png"><img src="assets/templates/template_6.png" alt="Template 6"></div>
+          <div class="template-slot" data-template="assets/templates/template_7.png"><img src="assets/templates/template_7.png" alt="Template 7"></div>
+        </div>
+        <button class="calc-btn btn-share" id="btnDownload" style="margin-top:24px; width:100%; justify-content:center; opacity:.4; cursor:not-allowed;" disabled>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Card
+        </button>
+      </div>
+    </div>
+  </div><!-- /page-airdrop -->
 
   <footer>© 2026 Branxi</footer>
 </div>
@@ -900,6 +1385,292 @@ requestAnimationFrame(animate);
     requestAnimationFrame(animatePosts);
   }
   requestAnimationFrame(animatePosts);
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════
+   AIRDROP CALCULATOR
+═══════════════════════════════════════════════════════════════════════ */
+(function() {
+  const PRESETS = {
+    nado:       { fdv: 1.5,  totalPoints: 43000000,   supplyPct: 8  },
+    variational:{ fdv: 0.6,  totalPoints: 9300000,    supplyPct: 30 },
+    treadfi:    { fdv: 0.2,  totalPoints: 2800000,    supplyPct: 15 },
+    '01exchange':{ fdv: 0.4, totalPoints: 10000000,   supplyPct: 15 },
+    extended:   { fdv: 0.5,  totalPoints: 77000000,   supplyPct: 30 },
+    pacifica:   { fdv: 0.6,  totalPoints: 600000000,  supplyPct: 20 },
+    grvt:       { fdv: 0.7,  totalPoints: 7700000,    supplyPct: 22 },
+    ethereal:   { fdv: 0.5,  totalPoints: 10000000,   supplyPct: 15 },
+    edgex:      { fdv: 2,    totalPoints: 30000000,   supplyPct: 30 },
+  };
+
+  const DEX_LABELS = {
+    nado: 'Nado', variational: 'Variational', treadfi: 'TreadFi',
+    '01exchange': '01Exchange', extended: 'Extended', pacifica: 'Pacifica',
+    grvt: 'GRVT', ethereal: 'Ethereal', edgex: 'EdgeX',
+  };
+
+  let activeDex = 'nado';
+
+  const inpMyPoints    = document.getElementById('inp-mypoints');
+  const inpFdv         = document.getElementById('inp-fdv');
+  const inpTotal       = document.getElementById('inp-totalpoints');
+  const inpSupply      = document.getElementById('inp-supply');
+
+  const resAirdrop = document.getElementById('resAirdrop');
+  const resPool    = document.getElementById('resPool');
+  const resShare   = document.getElementById('resShare');
+  const resPrice   = document.getElementById('resPricePerPoint') || document.getElementById('resPrice');
+  const resTier    = document.getElementById('resTier');
+  const resultCard = document.getElementById('resultCard');
+
+  function loadPreset(dex) {
+    const p = PRESETS[dex];
+    inpFdv.value    = p.fdv;
+    inpTotal.value  = p.totalPoints;
+    inpSupply.value = p.supplyPct;
+    calculate();
+  }
+
+  function getTier(usd) {
+    if (usd <= 0)      return { label: '—', cls: '' };
+    if (usd <= 500)    return { label: '🦠 Plankton', cls: 'tier-plankton' };
+    if (usd <= 1500)   return { label: '🦐 Shrimp',   cls: 'tier-shrimp'   };
+    if (usd <= 7999)   return { label: '🐬 Dolphin',  cls: 'tier-dolphin'  };
+    if (usd <= 14999)  return { label: '🦈 Shark',    cls: 'tier-shark'    };
+    return               { label: '🐋 Whale',    cls: 'tier-whale'    };
+  }
+
+  function fmt(n, decimals = 2) {
+    return n.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  }
+
+  function calculate() {
+    const myPts  = parseFloat(inpMyPoints.value) || 0;
+    const fdv    = parseFloat(inpFdv.value)      || 0;
+    const total  = parseFloat(inpTotal.value)    || 0;
+    const supply = parseFloat(inpSupply.value)   || 0;
+
+    if (!total || !fdv || !supply) {
+      resAirdrop.textContent = '$0';
+      resPool.textContent    = '—';
+      resShare.textContent   = '—';
+      resPrice.textContent   = '—';
+      resTier.textContent    = '—';
+      resTier.className      = 'result-tier';
+      resultCard.classList.remove('has-value');
+      return;
+    }
+
+    const poolUsd   = fdv * 1e9 * (supply / 100);       // total airdrop $
+    const share     = myPts / total;                      // user fraction
+    const airdropUsd = share * poolUsd;
+    const pricePerPt = total > 0 ? poolUsd / total : 0;
+
+    resAirdrop.textContent = '$' + fmt(airdropUsd, 0);
+    resPool.textContent    = '$' + fmt(poolUsd / 1e6, 2) + 'M';
+    resShare.textContent   = (share * 100).toFixed(4) + '%';
+    resPrice.textContent   = '$' + pricePerPt.toFixed(6);
+
+    const tier = getTier(airdropUsd);
+    resTier.textContent    = tier.label;
+    resTier.className      = 'result-tier ' + tier.cls;
+    resultCard.classList.toggle('has-value', airdropUsd > 0 && myPts > 0);
+  }
+
+  // Tab switching
+  document.getElementById('dexTabs').addEventListener('click', e => {
+    const tab = e.target.closest('.dex-tab');
+    if (!tab) return;
+    document.querySelectorAll('.dex-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    activeDex = tab.dataset.dex;
+    loadPreset(activeDex);
+  });
+
+  // Recalculate on input
+  [inpMyPoints, inpFdv, inpTotal, inpSupply].forEach(el => {
+    el.addEventListener('input', calculate);
+  });
+
+  // Share on X
+  document.getElementById('btnShareX').addEventListener('click', () => {
+    const dexLabel = DEX_LABELS[activeDex] || activeDex;
+    const amount   = resAirdrop.textContent;
+    const text = `My possible ${dexLabel} drop: ${amount}\nCalculate yours https://branxi.app/`;
+    window.open('https://x.com/intent/post?text=' + encodeURIComponent(text), '_blank');
+  });
+
+  // Create Image modal
+  document.getElementById('btnCreateImage').addEventListener('click', () => {
+    document.getElementById('imageModal').classList.add('open');
+  });
+  document.getElementById('modalClose').addEventListener('click', () => {
+    document.getElementById('imageModal').classList.remove('open');
+  });
+  document.getElementById('imageModal').addEventListener('click', e => {
+    if (e.target === document.getElementById('imageModal'))
+      document.getElementById('imageModal').classList.remove('open');
+  });
+
+  // Template selection
+  let selectedTemplate = null;
+  const btnDownload = document.getElementById('btnDownload');
+
+  document.getElementById('templateGrid').addEventListener('click', e => {
+    const slot = e.target.closest('.template-slot');
+    if (!slot) return;
+    document.querySelectorAll('.template-slot').forEach(s => s.classList.remove('selected'));
+    slot.classList.add('selected');
+    selectedTemplate = slot.dataset.template;
+    btnDownload.disabled = false;
+    btnDownload.style.opacity = '1';
+    btnDownload.style.cursor = 'pointer';
+  });
+
+  // Download — draws result card on top of selected template image
+  btnDownload.addEventListener('click', () => {
+    if (!selectedTemplate) return;
+
+    const dexLabel   = DEX_LABELS[activeDex] || activeDex;
+    const airdrop    = resAirdrop.textContent;
+    const pool       = resPool.textContent;
+    const share      = resShare.textContent;
+    const price      = resPrice.textContent;
+    const tierText   = resTier.textContent;
+
+    const W = 1200, H = 800;
+    const canvas = document.createElement('canvas');
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext('2d');
+
+    const bg = new Image();
+    bg.crossOrigin = 'anonymous';
+    bg.onload = () => {
+      // Background
+      ctx.drawImage(bg, 0, 0, W, H);
+
+      // Dark overlay for readability
+      ctx.fillStyle = 'rgba(0,0,0,0.45)';
+      ctx.fillRect(0, 0, W, H);
+
+      // Card panel
+      const cx = W / 2, cy = H / 2;
+      const cw = 700, ch = 380;
+      const rx = cx - cw/2, ry = cy - ch/2;
+      ctx.save();
+      roundRect(ctx, rx, ry, cw, ch, 24);
+      ctx.fillStyle = 'rgba(10,10,14,0.82)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(0,234,255,0.35)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.restore();
+
+      // Tier
+      ctx.font = '600 15px "DM Mono", monospace';
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.textAlign = 'center';
+      ctx.fillText(tierText, cx, ry + 44);
+
+      // DEX name
+      ctx.font = '700 18px "DM Mono", monospace';
+      ctx.fillStyle = '#00eaff';
+      ctx.fillText(dexLabel.toUpperCase(), cx, ry + 76);
+
+      // Airdrop label
+      ctx.font = '500 13px "DM Mono", monospace';
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.fillText('YOUR POTENTIAL AIRDROP', cx, ry + 112);
+
+      // Airdrop value
+      ctx.font = '800 72px "Space Grotesk", sans-serif';
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(airdrop, cx, ry + 196);
+
+      // Divider
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(rx + 40, ry + 222); ctx.lineTo(rx + cw - 40, ry + 222);
+      ctx.stroke();
+
+      // Stats row
+      const stats = [
+        { label: 'TOTAL POOL', val: pool },
+        { label: 'YOUR SHARE', val: share },
+        { label: 'PRICE/POINT', val: price },
+      ];
+      const statW = (cw - 80) / 3;
+      stats.forEach((s, i) => {
+        const sx = rx + 40 + statW * i + statW / 2;
+        ctx.font = '500 11px "DM Mono", monospace';
+        ctx.fillStyle = 'rgba(255,255,255,0.28)';
+        ctx.fillText(s.label, sx, ry + 254);
+        ctx.font = '600 16px "DM Mono", monospace';
+        ctx.fillStyle = 'rgba(255,255,255,0.8)';
+        ctx.fillText(s.val, sx, ry + 278);
+      });
+
+      // Branding
+      ctx.font = '500 13px "DM Mono", monospace';
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.fillText('branxi.app', cx, ry + ch - 22);
+
+      // Download
+      const link = document.createElement('a');
+      link.download = `branxi-${activeDex}-airdrop.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    };
+    bg.onerror = () => alert('Could not load template image. Make sure the file exists in assets/templates/');
+    bg.src = selectedTemplate;
+  });
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  // Init
+  loadPreset(activeDex);
+})();
+
+/* ═══════════════════════════════════════════════════════════════════════
+   PILL NAV
+═══════════════════════════════════════════════════════════════════════ */
+(function() {
+  const nav = document.getElementById('pillNav');
+  const indicator = document.getElementById('pillIndicator');
+  const btns = nav.querySelectorAll('.pill-btn');
+
+  function moveIndicator(btn) {
+    indicator.style.width = btn.offsetWidth + 'px';
+    indicator.style.transform = `translateX(${btn.offsetLeft - 5}px)`;
+  }
+
+  // Init position
+  moveIndicator(btns[0]);
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      btns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      moveIndicator(btn);
+
+      const pageId = 'page-' + btn.dataset.page;
+      document.querySelectorAll('.section-page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    });
+  });
 })();
 
 </script>

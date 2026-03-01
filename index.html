@@ -1633,102 +1633,126 @@ requestAnimationFrame(animate);
   });
 
   // Download — draws result card on top of selected template image
-  btnDownload.addEventListener('click', () => {
+  btnDownload.addEventListener('click', async () => {
     if (!selectedTemplate) return;
 
-    const dexLabel   = DEX_LABELS[activeDex] || activeDex;
-    const airdrop    = resAirdrop.textContent;
-    const pool       = resPool.textContent;
-    const share      = resShare.textContent;
-    const price      = resPrice.textContent;
-    const tierText   = resTier.textContent;
+    const dexLabel  = DEX_LABELS[activeDex] || activeDex;
+    const airdrop   = resAirdrop.textContent;
+    const pool      = resPool.textContent;
+    const myPtsVal  = document.getElementById('resMyPoints').textContent;
+    const price     = resPrice.textContent;
+    const supplyVal = document.getElementById('resSupply').textContent;
+    const tierText  = resTier.textContent;
 
-    const W = 1200, H = 800;
+    const W = 1200, H = 675;
     const canvas = document.createElement('canvas');
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
 
-    const bg = new Image();
-    bg.crossOrigin = 'anonymous';
-    bg.onload = () => {
-      // Background
-      ctx.drawImage(bg, 0, 0, W, H);
+    // Load bg via fetch to avoid CORS taint
+    let bgBitmap;
+    try {
+      const resp = await fetch(selectedTemplate);
+      const blob = await resp.blob();
+      bgBitmap = await createImageBitmap(blob);
+    } catch(e) {
+      alert('Could not load template. Make sure assets/templates/ exists on the server.');
+      return;
+    }
 
-      // Dark overlay for readability
-      ctx.fillStyle = 'rgba(0,0,0,0.45)';
-      ctx.fillRect(0, 0, W, H);
+    // Background
+    ctx.drawImage(bgBitmap, 0, 0, W, H);
 
-      // Card panel
-      const cx = W / 2, cy = H / 2;
-      const cw = 700, ch = 380;
-      const rx = cx - cw/2, ry = cy - ch/2;
+    // Dark overlay
+    ctx.fillStyle = 'rgba(0,0,0,0.42)';
+    ctx.fillRect(0, 0, W, H);
+
+    // Card panel
+    const cx = W / 2, cy = H / 2;
+    const cw = 760, ch = 400;
+    const rx = cx - cw/2, ry = cy - ch/2;
+    ctx.save();
+    roundRect(ctx, rx, ry, cw, ch, 24);
+    ctx.fillStyle = 'rgba(10,10,14,0.85)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,234,255,0.4)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.restore();
+
+    // branxi.app badge (top right)
+    ctx.font = '500 14px monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.textAlign = 'right';
+    ctx.fillText('branxi.app', rx + cw - 24, ry + 34);
+
+    // Tier
+    ctx.font = '600 13px monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.textAlign = 'left';
+    ctx.fillText(tierText, rx + 32, ry + 34);
+
+    // DEX name
+    ctx.font = '700 26px sans-serif';
+    ctx.fillStyle = '#00eaff';
+    ctx.textAlign = 'left';
+    ctx.fillText(dexLabel, rx + 32, ry + 80);
+
+    // Airdrop label
+    ctx.font = '500 13px monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.fillText('YOUR POTENTIAL AIRDROP', rx + 32, ry + 116);
+
+    // Airdrop value
+    ctx.font = '800 80px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText(airdrop, rx + 28, ry + 216);
+
+    // Divider
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(rx + 32, ry + 248); ctx.lineTo(rx + cw - 32, ry + 248);
+    ctx.stroke();
+
+    // Stats (4 boxes)
+    const stats = [
+      { label: 'TOTAL POOL',    val: pool     },
+      { label: 'MY POINTS',     val: myPtsVal },
+      { label: 'PRICE/POINT',   val: price    },
+      { label: 'AIRDROP SUPPLY',val: supplyVal},
+    ];
+    const boxGap = 14, boxCount = 4;
+    const boxW = (cw - 64 - boxGap * (boxCount - 1)) / boxCount;
+    stats.forEach((s, i) => {
+      const bx = rx + 32 + i * (boxW + boxGap);
+      const by = ry + 268;
+      const bh = 88;
+      // box bg
       ctx.save();
-      roundRect(ctx, rx, ry, cw, ch, 24);
-      ctx.fillStyle = 'rgba(10,10,14,0.82)';
+      roundRect(ctx, bx, by, boxW, bh, 10);
+      ctx.fillStyle = 'rgba(255,255,255,0.04)';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(0,234,255,0.35)';
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+      ctx.lineWidth = 1;
       ctx.stroke();
       ctx.restore();
-
-      // Tier
-      ctx.font = '600 15px "DM Mono", monospace';
-      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      // label
+      ctx.font = '500 10px monospace';
+      ctx.fillStyle = 'rgba(255,255,255,0.28)';
       ctx.textAlign = 'center';
-      ctx.fillText(tierText, cx, ry + 44);
+      ctx.fillText(s.label, bx + boxW/2, by + 24);
+      // value
+      ctx.font = '700 18px monospace';
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.fillText(s.val, bx + boxW/2, by + 58);
+    });
 
-      // DEX name
-      ctx.font = '700 18px "DM Mono", monospace';
-      ctx.fillStyle = '#00eaff';
-      ctx.fillText(dexLabel.toUpperCase(), cx, ry + 76);
-
-      // Airdrop label
-      ctx.font = '500 13px "DM Mono", monospace';
-      ctx.fillStyle = 'rgba(255,255,255,0.35)';
-      ctx.fillText('YOUR POTENTIAL AIRDROP', cx, ry + 112);
-
-      // Airdrop value
-      ctx.font = '800 72px "Space Grotesk", sans-serif';
-      ctx.fillStyle = '#ffffff';
-      ctx.fillText(airdrop, cx, ry + 196);
-
-      // Divider
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(rx + 40, ry + 222); ctx.lineTo(rx + cw - 40, ry + 222);
-      ctx.stroke();
-
-      // Stats row
-      const stats = [
-        { label: 'TOTAL POOL', val: pool },
-        { label: 'YOUR SHARE', val: share },
-        { label: 'PRICE/POINT', val: price },
-      ];
-      const statW = (cw - 80) / 3;
-      stats.forEach((s, i) => {
-        const sx = rx + 40 + statW * i + statW / 2;
-        ctx.font = '500 11px "DM Mono", monospace';
-        ctx.fillStyle = 'rgba(255,255,255,0.28)';
-        ctx.fillText(s.label, sx, ry + 254);
-        ctx.font = '600 16px "DM Mono", monospace';
-        ctx.fillStyle = 'rgba(255,255,255,0.8)';
-        ctx.fillText(s.val, sx, ry + 278);
-      });
-
-      // Branding
-      ctx.font = '500 13px "DM Mono", monospace';
-      ctx.fillStyle = 'rgba(255,255,255,0.25)';
-      ctx.fillText('branxi.app', cx, ry + ch - 22);
-
-      // Download
-      const link = document.createElement('a');
-      link.download = `branxi-${activeDex}-airdrop.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-    };
-    bg.onerror = () => alert('Could not load template image. Make sure the file exists in assets/templates/');
-    bg.src = selectedTemplate;
+    // Download
+    const link = document.createElement('a');
+    link.download = `branxi-${activeDex}-airdrop.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
   });
 
   function roundRect(ctx, x, y, w, h, r) {

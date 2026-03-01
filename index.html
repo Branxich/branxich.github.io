@@ -562,7 +562,7 @@ footer {
 }
 .field-group label {
   font-family: 'DM Mono', monospace;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: rgba(255,255,255,.35);
@@ -675,7 +675,7 @@ footer {
 }
 .result-dex-name {
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
   letter-spacing: .02em;
   color: var(--cyan);
@@ -700,35 +700,50 @@ footer {
 }
 .result-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 52px;
   padding-top: 20px;
-  margin-top: 36px;
   border-top: 1px solid rgba(255,255,255,.07);
 }
-.result-stat { display: flex; flex-direction: column; gap: 5px; }
+.result-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  padding: 8px 6px;
+  text-align: center;
+}
 .stat-label {
   font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: .07em;
+  font-size: 8px;
+  letter-spacing: .06em;
   text-transform: uppercase;
   color: rgba(255,255,255,.28);
 }
 .stat-val {
   font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  font-weight: 600;
-  color: rgba(255,255,255,.75);
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(255,255,255,.85);
 }
 .result-brand {
   position: absolute;
-  top: 18px;
-  right: 22px;
+  top: 16px;
+  right: 16px;
   font-family: 'DM Mono', monospace;
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: .06em;
-  color: rgba(255,255,255,.25);
+  color: rgba(255,255,255,.35);
   z-index: 2;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 6px;
+  padding: 4px 8px;
 }
 
 /* Action buttons */
@@ -999,6 +1014,10 @@ footer {
           <div class="result-stat">
             <span class="stat-label">Price per Point</span>
             <span class="stat-val" id="resPrice">—</span>
+          </div>
+          <div class="result-stat">
+            <span class="stat-label">Airdrop Supply</span>
+            <span class="stat-val" id="resSupply">—</span>
           </div>
         </div>
       </div>
@@ -1527,6 +1546,7 @@ requestAnimationFrame(animate);
       resPool.textContent    = '—';
       resShare.textContent   = '—';
       resPrice.textContent   = '—';
+      document.getElementById('resSupply').textContent = '—';
       resTier.textContent    = '—';
       resTier.className      = 'result-tier';
       resultCard.classList.remove('has-value');
@@ -1541,7 +1561,8 @@ requestAnimationFrame(animate);
     resAirdrop.textContent = '$' + fmt(airdropUsd, 0);
     resPool.textContent    = '$' + fmt(poolUsd / 1e6, 2) + 'M';
     resShare.textContent   = (share * 100).toFixed(4) + '%';
-    resPrice.textContent   = '$' + pricePerPt.toFixed(6);
+    resPrice.textContent   = '$' + pricePerPt.toFixed(2);
+    document.getElementById('resSupply').textContent = supply + '%';
 
     const tier = getTier(airdropUsd);
     resTier.textContent    = tier.label;

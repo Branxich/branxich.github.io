@@ -1678,10 +1678,12 @@ requestAnimationFrame(animate);
 
     // Fade left: gradient overlay darkening the left portion
     const fadeGrad = ctx.createLinearGradient(0, 0, W, 0);
-    fadeGrad.addColorStop(0,   'rgba(10,10,14,1)');
-    fadeGrad.addColorStop(0.45,'rgba(10,10,14,0.92)');
-    fadeGrad.addColorStop(0.72,'rgba(10,10,14,0.55)');
-    fadeGrad.addColorStop(1,   'rgba(10,10,14,0.15)');
+    fadeGrad.addColorStop(0,    'rgba(10,10,14,1)');
+    fadeGrad.addColorStop(0.35, 'rgba(10,10,14,0.98)');
+    fadeGrad.addColorStop(0.55, 'rgba(10,10,14,0.85)');
+    fadeGrad.addColorStop(0.72, 'rgba(10,10,14,0.6)');
+    fadeGrad.addColorStop(0.85, 'rgba(10,10,14,0.25)');
+    fadeGrad.addColorStop(1,    'rgba(10,10,14,0.05)');
     ctx.fillStyle = fadeGrad;
     ctx.fillRect(0, 0, W, H);
 

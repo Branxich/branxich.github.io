@@ -622,7 +622,24 @@ footer {
   inset: 0;
   background: radial-gradient(ellipse 70% 40% at 50% 0%, rgba(0,234,255,.05), transparent 70%);
   pointer-events: none;
+  z-index: 1;
 }
+/* template background image — right side, fades left */
+.card-bg-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center right;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity .4s;
+  z-index: 0;
+  -webkit-mask-image: linear-gradient(to left, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.35) 45%, transparent 80%);
+  mask-image: linear-gradient(to left, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.35) 45%, transparent 80%);
+}
+.card-bg-img.visible { opacity: 1; }
+/* make all card content sit above the bg */
+.result-tier, .result-main, .result-stats { position: relative; z-index: 2; }
 .result-tier {
   font-family: 'DM Mono', monospace;
   font-size: 11px;
@@ -927,6 +944,7 @@ footer {
 
       <!-- Result Card -->
       <div class="result-card" id="resultCard">
+        <div class="card-bg-img" id="cardBgImg"></div>
         <div class="result-tier" id="resTier">—</div>
         <div class="result-main">
           <span class="result-label">Your potential airdrop</span>
@@ -965,7 +983,7 @@ footer {
     <div class="modal-overlay" id="imageModal">
       <div class="modal-box">
         <button class="modal-close" id="modalClose">✕</button>
-        <p class="modal-title">Choose Background</p>
+        <p class="modal-title">Choose Card Background</p>
         <div class="template-grid" id="templateGrid">
           <div class="template-slot" data-template="assets/templates/template_1.png"><img src="assets/templates/template_1.png" alt="Template 1"></div>
           <div class="template-slot" data-template="assets/templates/template_2.png"><img src="assets/templates/template_2.png" alt="Template 2"></div>
@@ -1512,9 +1530,10 @@ requestAnimationFrame(animate);
       document.getElementById('imageModal').classList.remove('open');
   });
 
-  // Template selection
+  // Template selection → apply to result card background
   let selectedTemplate = null;
   const btnDownload = document.getElementById('btnDownload');
+  const cardBgImg   = document.getElementById('cardBgImg');
 
   document.getElementById('templateGrid').addEventListener('click', e => {
     const slot = e.target.closest('.template-slot');
@@ -1522,9 +1541,17 @@ requestAnimationFrame(animate);
     document.querySelectorAll('.template-slot').forEach(s => s.classList.remove('selected'));
     slot.classList.add('selected');
     selectedTemplate = slot.dataset.template;
+
+    // Apply as card background
+    cardBgImg.style.backgroundImage = `url('${selectedTemplate}')`;
+    cardBgImg.classList.add('visible');
+
     btnDownload.disabled = false;
     btnDownload.style.opacity = '1';
     btnDownload.style.cursor = 'pointer';
+
+    // Close modal after short delay
+    setTimeout(() => document.getElementById('imageModal').classList.remove('open'), 300);
   });
 
   // Download — draws result card on top of selected template image

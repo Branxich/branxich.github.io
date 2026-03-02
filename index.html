@@ -338,6 +338,25 @@ header {
   position: relative;
   z-index: 1;
 }
+.card-cta {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  background: rgba(0,234,255,.08);
+  border: 1px solid rgba(0,234,255,.2);
+  border-radius: 20px;
+  padding: 4px 12px;
+  position: relative;
+  z-index: 1;
+  transition: background .2s, border-color .2s;
+}
+.dex-card:hover .card-cta {
+  background: rgba(0,234,255,.15);
+  border-color: rgba(0,234,255,.4);
+}
 
 /* ─── FOOTER ─────────────────────────────────────────────────────────── */
 /* ─── POSTS CAROUSEL (marquee-style) ─────────────────────────────── */
@@ -1174,7 +1193,7 @@ function buildCard(dex) {
   el.innerHTML = `
     ${logo ? `<img class="card-logo" src="${logo}" alt="${dex.name} logo" draggable="false">` : ''}
     <span class="card-name">${dex.name}</span>
-    ${!dex.href ? `<span class="card-badge">Coming soon</span>` : ''}`;
+    ${dex.href ? `<span class="card-cta">Trade &amp; Earn</span>` : `<span class="card-badge">Coming soon</span>`}`;
   return el;
 }
 

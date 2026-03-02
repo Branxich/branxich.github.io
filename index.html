@@ -1843,11 +1843,25 @@ requestAnimationFrame(animate);
 
     const pad = 28; // matches card padding
 
-    // branxi.app badge
-    ctx.font = `500 ${parseFloat(getComputedStyle(brandEl).fontSize)}px monospace`;
-    ctx.fillStyle = 'rgba(255,255,255,0.3)';
-    ctx.textAlign = 'right';
-    ctx.fillText('branxi.app', CW - pad + 6, pad - 4);
+    // branxi.app badge with box
+    const brandFS = parseFloat(getComputedStyle(brandEl).fontSize);
+    ctx.font = `500 ${brandFS}px monospace`;
+    const brandText = 'branxi.app';
+    const brandW = ctx.measureText(brandText).width + 16;
+    const brandH = brandFS + 10;
+    const brandX = CW - pad - brandW;
+    const brandY = 14;
+    ctx.save();
+    roundRect(ctx, brandX, brandY, brandW, brandH, 6);
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.textAlign = 'center';
+    ctx.fillText(brandText, brandX + brandW / 2, brandY + brandFS + 2);
 
     // Tier
     ctx.font = `600 ${parseFloat(getComputedStyle(tierEl).fontSize)}px monospace`;
@@ -1914,9 +1928,9 @@ requestAnimationFrame(animate);
 
       ctx.save();
       roundRect(ctx, bx, by, bw, bh, 10);
-      ctx.fillStyle = 'rgba(255,255,255,0.04)';
+      ctx.fillStyle = 'rgba(255,255,255,0.09)';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.16)';
       ctx.lineWidth = 1;
       ctx.stroke();
       ctx.restore();

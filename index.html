@@ -706,9 +706,12 @@ footer {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
-  margin-top: 52px;
   padding-top: 20px;
   border-top: 1px solid rgba(255,255,255,.07);
+  position: absolute;
+  bottom: 24px;
+  left: 28px;
+  right: 28px;
 }
 .result-stat {
   display: flex;
@@ -1027,6 +1030,8 @@ footer {
         <button class="dex-tab" data-dex="ethereal">Ethereal</button>
         <button class="dex-tab" data-dex="edgex">EdgeX</button>
         <button class="dex-tab" data-dex="reya">Reya</button>
+        <button class="dex-tab" data-dex="hotstuff">Hotstuff</button>
+        <button class="dex-tab" data-dex="standx">StandX</button>
       </div>
 
       <!-- Input Fields -->
@@ -1545,12 +1550,14 @@ requestAnimationFrame(animate);
     ethereal:   { fdv: 0.5,  totalPoints: 10000000,   supplyPct: 15 },
     edgex:      { fdv: 2,    totalPoints: 30000000,   supplyPct: 30 },
     reya:       { fdv: 0.1,  totalPoints: 12000000,   supplyPct: 20 },
+    hotstuff:   { fdv: 0.15, totalPoints: 32000000,   supplyPct: 15 },
+    standx:     { fdv: 0.5,  totalPoints: 50000000,   supplyPct: 20 },
   };
 
   const DEX_LABELS = {
     nado: 'Nado', variational: 'Variational', treadfi: 'TreadFi',
     '01exchange': '01Exchange', extended: 'Extended', pacifica: 'Pacifica',
-    grvt: 'GRVT', ethereal: 'Ethereal', edgex: 'EdgeX', reya: 'Reya',
+    grvt: 'GRVT', ethereal: 'Ethereal', edgex: 'EdgeX', reya: 'Reya', hotstuff: 'Hotstuff', standx: 'StandX',
   };
 
   const DEX_LOGOS = {
@@ -1564,6 +1571,8 @@ requestAnimationFrame(animate);
     ethereal:    'assets/logo_ethereal.png',
     edgex:       'assets/logo_edgex.png',
     reya:        'assets/logo_reya.png',
+    hotstuff:    'assets/logo_hotstuff.png',
+    standx:      'assets/logo_standx.png',
   };
 
   let activeDex = 'nado';

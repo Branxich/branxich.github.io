@@ -2238,26 +2238,12 @@ requestAnimationFrame(animate);
   ];
 
   async function fetchFunding() {
-    // Use Claude API as CORS proxy to reach Hyperliquid
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    const resp = await fetch('https://api.hyperliquid.xyz/info', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 8000,
-        system: 'You are a data proxy. When asked to fetch an API, return ONLY the raw JSON with no explanation, no markdown, no code blocks.',
-        messages: [{
-          role: 'user',
-          content: 'Fetch https://api.hyperliquid.xyz/info via POST with body {"type":"metaAndAssetCtxs"} and return ONLY the raw JSON array response.'
-        }]
-      })
+      body: JSON.stringify({ type: 'metaAndAssetCtxs' })
     });
-    const data = await resp.json();
-    const text = data.content?.map(b => b.text || '').join('') || '';
-    // Extract JSON array from response
-    const match = text.match(/\[\s*\{[\s\S]*\}\s*,\s*\[[\s\S]*\]\s*\]/);
-    if (!match) throw new Error('parse fail');
-    return JSON.parse(match[0]);
+    return await resp.json();
   }
 
   function fmtFunding(f) {
@@ -2339,7 +2325,7 @@ requestAnimationFrame(animate);
 
   async function loadHip3() {
     const tbody = document.getElementById('hip3Body');
-    tbody.innerHTML = '<tr><td colspan="6" class="hip3-loading"><div class="hip3-spinner"></div>Fetching live data via Claude proxy...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="hip3-loading"><div class="hip3-spinner"></div>Fetching live data...</td></tr>';
 
     try {
       const [meta, ctxs] = await fetchFunding();

@@ -2237,20 +2237,42 @@ requestAnimationFrame(animate);
     { asset: 'SKHX',     entries: [{ coin: 'SKHX-USDC',  builder: 'xyz',  lev: 10 }]},
   ];
 
-  async function fetchFunding() {
+  async function hlPost(body) {
     const resp = await fetch('https://branxi.runov-vlad37.workers.dev/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'metaAndAssetCtxs' })
+      body: JSON.stringify(body)
     });
-    const data = await resp.json();
-    // Debug: log all coin names to console so we can see exact names
-    if (Array.isArray(data) && data[0]?.universe) {
-      const names = data[0].universe.map((a,i) => `${a.name}: ${data[1][i]?.funding ?? 'null'}`);
-      console.log('=== ALL HYPERLIQUID COINS ===');
-      names.forEach(n => console.log(n));
+    return resp.json();
+  }
+
+  async function fetchFunding() {
+    // HIP-3 builder perps live in a separate universe — fetch via "perpsAtTime" or check spot
+    // Try spotMetaAndAssetCtxs which includes builder-deployed markets
+    const [standard, spot] = await Promise.all([
+      hlPost({ type: 'metaAndAssetCtxs' }),
+      hlPost({ type: 'spotMetaAndAssetCtxs' }),
+    ]);
+
+    console.log('=== STANDARD PERPS:', standard[0]?.universe?.length);
+    console.log('=== SPOT MARKETS:', spot[0]?.universe?.length);
+
+    // Log spot markets to find HIP-3
+    if (spot[0]?.universe) {
+      spot[0].universe.forEach((a,i) => {
+        const name = a.name || JSON.stringify(a);
+        console.log(`SPOT[${i}]: ${name}`);
+      });
     }
-    return data;
+
+    // Also log all standard perps
+    if (standard[0]?.universe) {
+      standard[0].universe.forEach((a,i) => {
+        console.log(`PERP[${i}]: ${a.name} funding=${standard[1][i]?.funding}`);
+      });
+    }
+
+    return standard; // placeholder
   }
 
   function fmtFunding(f) {

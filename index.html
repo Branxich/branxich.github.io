@@ -537,16 +537,18 @@ header {
 }
 .hip3-refresh {
   font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  background: rgba(255,255,255,.05);
-  border: 1px solid rgba(255,255,255,.1);
-  color: rgba(255,255,255,.4);
-  border-radius: 8px;
-  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.15);
+  color: rgba(255,255,255,.7);
+  border-radius: 10px;
+  padding: 8px 20px;
   cursor: pointer;
   transition: all .15s;
+  letter-spacing: .04em;
 }
-.hip3-refresh:hover { background: rgba(255,255,255,.1); color: #fff; }
+.hip3-refresh:hover { background: rgba(255,255,255,.14); color: #fff; border-color: rgba(255,255,255,.3); }
 .hip3-table-wrap { overflow-x: auto; }
 .hip3-table {
   width: 100%;
@@ -607,8 +609,10 @@ header {
   padding: 2px 8px;
   border-radius: 20px;
 }
-.hip3-action-badge.short { background: rgba(248,113,113,.2); color: #f87171; }
-.hip3-action-badge.long  { background: rgba(74,222,128,.2);  color: #4ade80; }
+.hip3-action-badge.short { background: rgba(248,113,113,.15); color: #f87171; border: 1px solid rgba(248,113,113,.2); }
+.hip3-action-badge.long  { background: rgba(74,222,128,.15);  color: #4ade80; border: 1px solid rgba(74,222,128,.2); }
+.hip3-action-badge.short.best { background: rgba(248,113,113,.28); color: #fca5a5; border-color: rgba(248,113,113,.5); }
+.hip3-action-badge.long.best  { background: rgba(74,222,128,.28);  color: #86efac; border-color: rgba(74,222,128,.5); }
 .hip3-action-ann {
   font-size: 9px;
   color: rgba(255,255,255,.35);
@@ -2200,25 +2204,26 @@ requestAnimationFrame(animate);
       DEXES.map(dex => hlPost({ type: 'metaAndAssetCtxs', dex }))
     );
 
-    // Build grouped map: baseAsset -> [{key, builder, lev, funding}]
+    // Build grouped map: baseAsset -> [{key, builder, lev, funding, oi}]
     const grouped = {};
+    const groupOI = {}; // baseAsset -> total OI across all builders
     DEXES.forEach((dex, di) => {
       const [meta, ctxs] = results[di];
       if (!meta?.universe) return;
       meta.universe.forEach((asset, i) => {
-        const name = asset.name; // e.g. "xyz:TSLA"
+        const name = asset.name;
         const funding = ctxs[i]?.funding ?? null;
         const maxLev = asset.maxLeverage ?? '?';
-        // base = strip dex prefix
+        const oi = parseFloat(ctxs[i]?.openInterest ?? 0);
         const base = name.includes(':') ? name.slice(name.indexOf(':') + 1) : name;
-        // Skip standard HL perps that are not HIP-3
         if (STANDARD_HL.has(base)) return;
-        if (!grouped[base]) grouped[base] = [];
-        grouped[base].push({ key: name, builder: dex, lev: maxLev + 'x', funding });
+        if (!grouped[base]) { grouped[base] = []; groupOI[base] = 0; }
+        grouped[base].push({ key: name, builder: dex, lev: maxLev + 'x', funding, oi });
+        groupOI[base] += oi;
       });
     });
 
-    return grouped;
+    return { grouped, groupOI };
   }
 
   function fmtFunding(f) {
@@ -2228,15 +2233,12 @@ requestAnimationFrame(animate);
     return { raw: v, str: sign + (v * 100).toFixed(4) + '%', ann: (v * 24 * 365 * 100).toFixed(0) };
   }
 
-  function renderHip3(grouped) {
+  function renderHip3({ grouped, groupOI }) {
     const tbody = document.getElementById('hip3Body');
     tbody.innerHTML = '';
 
-    // Sort: assets with most extreme funding first
-    const sortedBases = Object.keys(grouped).sort((a, b) => {
-      const maxAbs = arr => Math.max(...arr.map(e => Math.abs(parseFloat(e.funding || 0))));
-      return maxAbs(grouped[b]) - maxAbs(grouped[a]);
-    });
+    // Sort by total Open Interest descending (highest volume pairs first)
+    const sortedBases = Object.keys(grouped).sort((a, b) => (groupOI[b] || 0) - (groupOI[a] || 0));
 
     sortedBases.forEach(base => {
       const group = { asset: base, entries: grouped[base] };
@@ -2280,15 +2282,16 @@ requestAnimationFrame(animate);
             ? (isBestLong ? 'neg best-neg' : 'neg')
             : 'neu';
         const ann = Math.abs(parseInt(e.fd.ann));
+        // Every cell shows direction — positive funding = SHORT earns, negative = LONG earns
         let badge = '';
-        if (isBestShort) {
-          // If we SHORT here to earn funding, tell where to LONG to hedge
-          const hedgeLong = bestLong ? ` → LONG ${bestLong.builder}` : '';
-          badge = `<span class="hip3-action-badge short">SHORT${hedgeLong}</span><span class="hip3-action-ann">${ann}% ann</span>`;
-        } else if (isBestLong) {
-          // If we LONG here to earn funding, tell where to SHORT to hedge
-          const hedgeShort = bestShort ? ` → SHORT ${bestShort.builder}` : '';
-          badge = `<span class="hip3-action-badge long">LONG${hedgeShort}</span><span class="hip3-action-ann">${ann}% ann</span>`;
+        if (isPos) {
+          const isBest = isBestShort;
+          const hedgeTip = isBest && bestLong ? ` · LONG ${bestLong.builder}` : '';
+          badge = `<span class="hip3-action-badge short${isBest ? ' best' : ''}">SHORT${hedgeTip}</span><span class="hip3-action-ann">${ann}% ann</span>`;
+        } else if (isNeg) {
+          const isBest = isBestLong;
+          const hedgeTip = isBest && bestShort ? ` · SHORT ${bestShort.builder}` : '';
+          badge = `<span class="hip3-action-badge long${isBest ? ' best' : ''}">LONG${hedgeTip}</span><span class="hip3-action-ann">${ann}% ann</span>`;
         }
         return `<span class="hip3-cell ${cls}"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">${e.fd.str}</span>${badge}</span>`;
       }).join(' ');

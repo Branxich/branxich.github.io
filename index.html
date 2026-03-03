@@ -552,11 +552,11 @@ header {
   width: 100%;
   border-collapse: collapse;
   font-family: 'DM Mono', monospace;
-  font-size: 12px;
+  font-size: 13px;
 }
 .hip3-table thead th {
   text-align: left;
-  padding: 8px 12px;
+  padding: 10px 14px;
   font-size: 9px;
   letter-spacing: .1em;
   text-transform: uppercase;
@@ -571,44 +571,44 @@ header {
 .hip3-table tbody tr:last-child { border-bottom: none; }
 .hip3-table tbody tr:hover { background: rgba(255,255,255,.03); }
 .hip3-table tbody td {
-  padding: 9px 12px;
-  color: rgba(255,255,255,.6);
+  padding: 10px 14px;
+  color: rgba(255,255,255,.8);
   white-space: nowrap;
   vertical-align: middle;
 }
-.hip3-asset { font-weight: 700; color: #fff; font-size: 13px; }
+.hip3-asset { font-weight: 700; color: #fff; font-size: 16px; }
 .hip3-cell {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  padding: 5px 8px;
-  border-radius: 8px;
+  padding: 8px 12px;
+  border-radius: 10px;
   border: 1px solid transparent;
-  font-size: 11px;
   line-height: 1.4;
   text-align: center;
   overflow: hidden;
+  gap: 3px;
 }
-.hip3-cell .lbl { font-size: 8px; letter-spacing: .08em; color: rgba(255,255,255,.25); text-transform: uppercase; }
-.hip3-cell .val { font-weight: 600; }
-.hip3-cell.pos { background: rgba(74,222,128,.07); border-color: rgba(74,222,128,.15); }
+.hip3-cell .lbl { font-size: 9px; letter-spacing: .08em; color: rgba(255,255,255,.3); text-transform: uppercase; }
+.hip3-cell .val { font-weight: 700; font-size: 15px; }
+.hip3-cell.pos { background: rgba(74,222,128,.05); border-color: rgba(74,222,128,.12); }
 .hip3-cell.pos .val { color: #4ade80; }
-.hip3-cell.neg { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.15); }
+.hip3-cell.neg { background: rgba(248,113,113,.05); border-color: rgba(248,113,113,.12); }
 .hip3-cell.neg .val { color: #f87171; }
-.hip3-cell.neu .val { color: rgba(255,255,255,.35); }
-.hip3-cell.best-pos { background: rgba(74,222,128,.15); border-color: rgba(74,222,128,.4); }
+.hip3-cell.neu .val { color: rgba(255,255,255,.3); }
+.hip3-cell.best-pos { background: rgba(74,222,128,.13); border-color: rgba(74,222,128,.4); }
 .hip3-cell.best-pos .val { color: #4ade80; }
-.hip3-cell.best-neg { background: rgba(248,113,113,.15); border-color: rgba(248,113,113,.4); }
+.hip3-cell.best-neg { background: rgba(248,113,113,.13); border-color: rgba(248,113,113,.4); }
 .hip3-cell.best-neg .val { color: #f87171; }
-.hip3-best {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 3px 10px;
+.hip3-action-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .07em;
+  padding: 2px 8px;
   border-radius: 20px;
 }
-.hip3-best.long { background: rgba(74,222,128,.12); border: 1px solid rgba(74,222,128,.25); color: #4ade80; }
-.hip3-best.short { background: rgba(248,113,113,.12); border: 1px solid rgba(248,113,113,.25); color: #f87171; }
-.hip3-best.neutral { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.3); }
+.hip3-action-badge.short { background: rgba(248,113,113,.2); color: #f87171; }
+.hip3-action-badge.long  { background: rgba(74,222,128,.2);  color: #4ade80; }
 .hip3-loading {
   text-align: center;
   padding: 48px 16px;
@@ -1300,7 +1300,6 @@ footer {
             <tr>
               <th>Asset</th>
               <th style="width:100%">Funding per builder (1h) — best highlighted</th>
-              <th>Best pick</th>
             </tr>
           </thead>
           <tbody id="hip3Body">
@@ -2310,41 +2309,27 @@ requestAnimationFrame(animate);
       const bestLong  = negEntries.length > 0 ? negEntries.reduce((a, b) => a.fd.raw < b.fd.raw ? a : b) : null;
 
       const cellsHtml = entries.map(e => {
+        const isBestShort = bestShort && e.key === bestShort.key;
+        const isBestLong  = bestLong  && e.key === bestLong.key;
         if (!e.fd) return `<span class="hip3-cell neu"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">—</span></span>`;
         const isPos = e.fd.raw > 0.00005;
         const isNeg = e.fd.raw < -0.00005;
-        const isBestShort = bestShort && e.key === bestShort.key;
-        const isBestLong  = bestLong  && e.key === bestLong.key;
         let cls = isPos
           ? (isBestShort ? 'pos best-pos' : 'pos')
           : isNeg
             ? (isBestLong ? 'neg best-neg' : 'neg')
             : 'neu';
-        // Add strategy hint on best cells
-        const hint = isBestShort ? ' · SHORT' : isBestLong ? ' · LONG' : '';
-        return `<span class="hip3-cell ${cls}"><span class="lbl">${e.builder} ${e.lev}x${hint}</span><span class="val">${e.fd.str}</span></span>`;
+        const ann = Math.abs(parseInt(e.fd.ann));
+        let badge = '';
+        if (isBestShort) badge = `<span class="hip3-action-badge short">SHORT · ${ann}% ann</span>`;
+        else if (isBestLong) badge = `<span class="hip3-action-badge long">LONG · ${ann}% ann</span>`;
+        return `<span class="hip3-cell ${cls}"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">${e.fd.str}</span>${badge}</span>`;
       }).join(' ');
 
-      tdCells.innerHTML = `<div style="display:flex;flex-wrap:nowrap;gap:8px;align-items:center;width:100%;">${cellsHtml.replace(/class="hip3-cell/g, 'style="flex:1;min-width:0;" class="hip3-cell')}</div>`;
+      // Embed SHORT/LONG label inside each best cell
+      const finalHtml = cellsHtml.replace(/class="hip3-cell/g, 'style="flex:1;min-width:0;" class="hip3-cell');
+      tdCells.innerHTML = `<div style="display:flex;flex-wrap:nowrap;gap:8px;align-items:stretch;width:100%;">${finalHtml}</div>`;
       tr.appendChild(tdCells);
-
-      // Best pick column — show both long and short if applicable
-      const tdBest = document.createElement('td');
-      const picks = [];
-      if (bestShort) {
-        const ann = Math.abs(parseInt(bestShort.fd.ann));
-        picks.push(`<div style="display:flex;flex-direction:column;gap:1px;"><span class="hip3-best short">SHORT ${bestShort.builder}</span><span style="font-size:9px;color:rgba(248,113,113,.5);font-family:'DM Mono',monospace;">${ann}% ann.</span></div>`);
-      }
-      if (bestLong) {
-        const ann = Math.abs(parseInt(bestLong.fd.ann));
-        picks.push(`<div style="display:flex;flex-direction:column;gap:1px;"><span class="hip3-best long">LONG ${bestLong.builder}</span><span style="font-size:9px;color:rgba(74,222,128,.5);font-family:'DM Mono',monospace;">${ann}% ann.</span></div>`);
-      }
-      if (picks.length > 0) {
-        tdBest.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px;">${picks.join('')}</div>`;
-      } else {
-        tdBest.innerHTML = `<span class="hip3-best neutral">—</span>`;
-      }
-      tr.appendChild(tdBest);
 
       tbody.appendChild(tr);
     });

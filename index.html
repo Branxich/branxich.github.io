@@ -2238,7 +2238,7 @@ requestAnimationFrame(animate);
   ];
 
   async function fetchFunding() {
-    const resp = await fetch('https://api.hyperliquid.xyz/info', {
+    const resp = await fetch('https://branxi.runov-vlad37.workers.dev/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: 'metaAndAssetCtxs' })

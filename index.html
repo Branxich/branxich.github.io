@@ -589,13 +589,13 @@ header {
   overflow: hidden;
   gap: 3px;
 }
-.hip3-cell .lbl { font-size: 9px; letter-spacing: .08em; color: rgba(255,255,255,.3); text-transform: uppercase; }
+.hip3-cell .lbl { font-size: 9px; letter-spacing: .08em; color: rgba(255,255,255,.55); text-transform: uppercase; }
 .hip3-cell .val { font-weight: 700; font-size: 15px; }
-.hip3-cell.pos { background: rgba(74,222,128,.05); border-color: rgba(74,222,128,.12); }
+.hip3-cell.pos { background: rgba(74,222,128,.08); border-color: rgba(74,222,128,.2); }
 .hip3-cell.pos .val { color: #4ade80; }
-.hip3-cell.neg { background: rgba(248,113,113,.05); border-color: rgba(248,113,113,.12); }
+.hip3-cell.neg { background: rgba(248,113,113,.08); border-color: rgba(248,113,113,.2); }
 .hip3-cell.neg .val { color: #f87171; }
-.hip3-cell.neu .val { color: rgba(255,255,255,.3); }
+.hip3-cell.neu .val { color: rgba(255,255,255,.55); }
 .hip3-cell.best-pos { background: rgba(74,222,128,.13); border-color: rgba(74,222,128,.4); }
 .hip3-cell.best-pos .val { color: #4ade80; }
 .hip3-cell.best-neg { background: rgba(248,113,113,.13); border-color: rgba(248,113,113,.4); }
@@ -609,6 +609,11 @@ header {
 }
 .hip3-action-badge.short { background: rgba(248,113,113,.2); color: #f87171; }
 .hip3-action-badge.long  { background: rgba(74,222,128,.2);  color: #4ade80; }
+.hip3-action-ann {
+  font-size: 9px;
+  color: rgba(255,255,255,.35);
+  font-family: 'DM Mono', monospace;
+}
 .hip3-loading {
   text-align: center;
   padding: 48px 16px;
@@ -2321,8 +2326,15 @@ requestAnimationFrame(animate);
             : 'neu';
         const ann = Math.abs(parseInt(e.fd.ann));
         let badge = '';
-        if (isBestShort) badge = `<span class="hip3-action-badge short">SHORT · ${ann}% ann</span>`;
-        else if (isBestLong) badge = `<span class="hip3-action-badge long">LONG · ${ann}% ann</span>`;
+        if (isBestShort) {
+          // If we SHORT here to earn funding, tell where to LONG to hedge
+          const hedgeLong = bestLong ? ` → LONG ${bestLong.builder}` : '';
+          badge = `<span class="hip3-action-badge short">SHORT${hedgeLong}</span><span class="hip3-action-ann">${ann}% ann</span>`;
+        } else if (isBestLong) {
+          // If we LONG here to earn funding, tell where to SHORT to hedge
+          const hedgeShort = bestShort ? ` → SHORT ${bestShort.builder}` : '';
+          badge = `<span class="hip3-action-badge long">LONG${hedgeShort}</span><span class="hip3-action-ann">${ann}% ann</span>`;
+        }
         return `<span class="hip3-cell ${cls}"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">${e.fd.str}</span>${badge}</span>`;
       }).join(' ');
 

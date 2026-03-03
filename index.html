@@ -2175,72 +2175,6 @@ requestAnimationFrame(animate);
 
   // ── HIP-3 Funding ───────────────────────────────────────
   // Grouped: same underlying asset → one row, each builder = one column
-  const HIP3 = [
-    { asset: 'SILVER',   entries: [
-      { key: 'xyz:SILVER',   builder: 'xyz',  lev: 25 },
-      { key: 'cash:SILVER',  builder: 'cash', lev: 20 },
-      { key: 'flx:SILVER',   builder: 'flx',  lev: 20 },
-      { key: 'km:SILVER',    builder: 'km',   lev: 20 },
-    ]},
-    { asset: 'GOLD',     entries: [
-      { key: 'xyz:GOLD',     builder: 'xyz',  lev: 25 },
-      { key: 'cash:GOLD',    builder: 'cash', lev: 20 },
-    ]},
-    { asset: 'PLATINUM', entries: [
-      { key: 'xyz:PLATINUM', builder: 'xyz',  lev: 20 },
-      { key: 'flx:PLATINUM', builder: 'flx',  lev: 20 },
-    ]},
-    { asset: 'NVDA',     entries: [
-      { key: 'xyz:NVDA',     builder: 'xyz',  lev: 20 },
-      { key: 'cash:NVDA',    builder: 'cash', lev: 20 },
-    ]},
-    { asset: 'TSLA',     entries: [
-      { key: 'xyz:TSLA',     builder: 'xyz',  lev: 10 },
-      { key: 'cash:TSLA',    builder: 'cash', lev: 20 },
-    ]},
-    { asset: 'HOOD',     entries: [
-      { key: 'xyz:HOOD',     builder: 'xyz',  lev: 10 },
-      { key: 'cash:HOOD',    builder: 'cash', lev: 20 },
-    ]},
-    { asset: 'GOOGL',    entries: [
-      { key: 'xyz:GOOGL',    builder: 'xyz',  lev: 10 },
-      { key: 'cash:GOOGL',   builder: 'cash', lev: 20 },
-    ]},
-    { asset: 'AMZN',     entries: [
-      { key: 'xyz:AMZN',     builder: 'xyz',  lev: 10 },
-      { key: 'cash:AMZN',    builder: 'cash', lev: 20 },
-    ]},
-    { asset: 'INTC',     entries: [
-      { key: 'xyz:INTC',     builder: 'xyz',  lev: 10 },
-      { key: 'cash:INTC',    builder: 'cash', lev: 20 },
-    ]},
-    { asset: 'USA500',   entries: [
-      { key: 'cash:USA500',  builder: 'cash', lev: 20 },
-      { key: 'km:US500',     builder: 'km',   lev: 25 },
-    ]},
-    { asset: 'OIL/CL',  entries: [
-      { key: 'xyz:CL',       builder: 'xyz',  lev: 20 },
-      { key: 'flx:OIL',      builder: 'flx',  lev: 15 },
-    ]},
-    { asset: 'ETH',      entries: [{ key: 'hyna:ETH',    builder: 'hyna', lev: 25 }]},
-    { asset: 'BTC',      entries: [{ key: 'hyna:BTC',    builder: 'hyna', lev: 40 }]},
-    { asset: 'HYPE',     entries: [{ key: 'hyna:HYPE',   builder: 'hyna', lev: 10 }]},
-    { asset: 'XYZ100',   entries: [{ key: 'xyz:XYZ100',  builder: 'xyz',  lev: 30 }]},
-    { asset: 'EUR',      entries: [{ key: 'xyz:EUR',     builder: 'xyz',  lev: 50 }]},
-    { asset: 'USDJPY',   entries: [{ key: 'xyz:JPY',  builder: 'xyz',  lev: 50 }]},
-    { asset: 'COPPER',   entries: [{ key: 'xyz:COPPER',  builder: 'xyz',  lev: 20 }]},
-    { asset: 'NATGAS',   entries: [{ key: 'xyz:NATGAS',  builder: 'xyz',  lev: 10 }]},
-    { asset: 'PLTR',     entries: [{ key: 'xyz:PLTR',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'MSTR',     entries: [{ key: 'xyz:MSTR',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'COIN',     entries: [{ key: 'xyz:COIN',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'CRCL',     entries: [{ key: 'xyz:CRCL',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'AAPL',     entries: [{ key: 'xyz:AAPL',    builder: 'xyz',  lev: 20 }]},
-    { asset: 'MU',       entries: [{ key: 'xyz:MU',      builder: 'xyz',  lev: 10 }]},
-    { asset: 'EWY',      entries: [{ key: 'cash:EWY',    builder: 'cash', lev: 20 }]},
-    { asset: 'SNDK',     entries: [{ key: 'xyz:SNDK',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'SMSN',     entries: [{ key: 'xyz:SMSN',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'SKHX',     entries: [{ key: 'xyz:SKHX',    builder: 'xyz',  lev: 10 }]},
-  ];
 
   async function hlPost(body) {
     const resp = await fetch('https://branxi.runov-vlad37.workers.dev/', {
@@ -2252,25 +2186,39 @@ requestAnimationFrame(animate);
   }
 
   async function fetchFunding() {
-    // HIP-3 perps live on separate DEXs — must query each with dex parameter
+    // Standard HL perps to exclude (they appear on some builder DEXs as duplicates)
+    const STANDARD_HL = new Set(['BTC','ETH','SOL','AVAX','BNB','MATIC','DOGE','ARB','OP',
+      'APE','LTC','ATOM','DYDX','INJ','SUI','TRX','LINK','DOT','ADA','XRP','NEAR',
+      'FIL','AAVE','UNI','CRV','SNX','MKR','COMP','1000PEPE','1000SHIB','WLD','SEI',
+      'ORDI','STX','CFX','FTM','GMT','APT','BLUR','GMX','MAGIC','KPEPE','RNDR',
+      'MANTA','ALT','JTO','PYTH','STRK','PIXEL','DYM','METIS','AEVO','BOME','W',
+      'ENA','TAO','OMNI','REZ','ETHFI','BB','NOT','IO','ZRO','WIF','POPCAT']);
+
     const DEXES = ['xyz', 'cash', 'flx', 'km', 'hyna'];
 
     const results = await Promise.all(
       DEXES.map(dex => hlPost({ type: 'metaAndAssetCtxs', dex }))
     );
 
-    // API returns names already prefixed like "xyz:TSLA", "cash:GOLD-USDT"
-    const fundingMap = {};
+    // Build grouped map: baseAsset -> [{key, builder, lev, funding}]
+    const grouped = {};
     DEXES.forEach((dex, di) => {
       const [meta, ctxs] = results[di];
       if (!meta?.universe) return;
       meta.universe.forEach((asset, i) => {
-        // Use asset.name as-is — it already includes the dex prefix
-        fundingMap[asset.name] = ctxs[i]?.funding ?? null;
+        const name = asset.name; // e.g. "xyz:TSLA"
+        const funding = ctxs[i]?.funding ?? null;
+        const maxLev = asset.maxLeverage ?? '?';
+        // base = strip dex prefix
+        const base = name.includes(':') ? name.slice(name.indexOf(':') + 1) : name;
+        // Skip standard HL perps that are not HIP-3
+        if (STANDARD_HL.has(base)) return;
+        if (!grouped[base]) grouped[base] = [];
+        grouped[base].push({ key: name, builder: dex, lev: maxLev + 'x', funding });
       });
     });
 
-    return fundingMap;
+    return grouped;
   }
 
   function fmtFunding(f) {
@@ -2280,11 +2228,18 @@ requestAnimationFrame(animate);
     return { raw: v, str: sign + (v * 100).toFixed(4) + '%', ann: (v * 24 * 365 * 100).toFixed(0) };
   }
 
-  function renderHip3(fundingMap) {
+  function renderHip3(grouped) {
     const tbody = document.getElementById('hip3Body');
     tbody.innerHTML = '';
 
-    HIP3.forEach(group => {
+    // Sort: assets with most extreme funding first
+    const sortedBases = Object.keys(grouped).sort((a, b) => {
+      const maxAbs = arr => Math.max(...arr.map(e => Math.abs(parseFloat(e.funding || 0))));
+      return maxAbs(grouped[b]) - maxAbs(grouped[a]);
+    });
+
+    sortedBases.forEach(base => {
+      const group = { asset: base, entries: grouped[base] };
       const tr = document.createElement('tr');
 
       // Asset name
@@ -2298,7 +2253,7 @@ requestAnimationFrame(animate);
       tdCells.style.width = '100%';
 
       const entries = group.entries.map(e => {
-        const fd = fmtFunding(fundingMap[e.key]);
+        const fd = fmtFunding(e.funding);
         return { ...e, fd };
       });
 

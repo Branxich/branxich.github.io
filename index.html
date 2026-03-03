@@ -2297,41 +2297,49 @@ requestAnimationFrame(animate);
         return { ...e, fd };
       });
 
-      // Find best: if any positive → best = highest positive (earn by being short, pay to be long)
-      // Strategy: positive funding → SHORT earns; negative → LONG earns
+      // Strategy:
+      // Positive funding → shorts get paid → best SHORT = highest positive rate
+      // Negative funding → longs get paid → best LONG = lowest (most negative) rate
+      // If multiple entries: show all with color, highlight best per direction
       const withFunding = entries.filter(e => e.fd);
-      let bestCoin = null, bestType = null;
-      if (withFunding.length > 0) {
-        const maxPos = withFunding.filter(e => e.fd.raw > 0.00005);
-        const maxNeg = withFunding.filter(e => e.fd.raw < -0.00005);
-        if (maxPos.length > 0) {
-          bestCoin = maxPos.reduce((a, b) => a.fd.raw > b.fd.raw ? a : b);
-          bestType = 'short';
-        } else if (maxNeg.length > 0) {
-          bestCoin = maxNeg.reduce((a, b) => a.fd.raw < b.fd.raw ? a : b);
-          bestType = 'long';
-        }
-      }
+      const posEntries = withFunding.filter(e => e.fd.raw > 0.00005);
+      const negEntries = withFunding.filter(e => e.fd.raw < -0.00005);
+
+      const bestShort = posEntries.length > 0 ? posEntries.reduce((a, b) => a.fd.raw > b.fd.raw ? a : b) : null;
+      const bestLong  = negEntries.length > 0 ? negEntries.reduce((a, b) => a.fd.raw < b.fd.raw ? a : b) : null;
 
       const cellsHtml = entries.map(e => {
         if (!e.fd) return `<span class="hip3-cell neu"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">—</span></span>`;
         const isPos = e.fd.raw > 0.00005;
         const isNeg = e.fd.raw < -0.00005;
-        const isBest = bestCoin && e.key === bestCoin.key;
-        let cls = isPos ? (isBest ? 'pos best-pos' : 'pos') : isNeg ? (isBest ? 'neg best-neg' : 'neg') : 'neu';
-        return `<span class="hip3-cell ${cls}"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">${e.fd.str}</span></span>`;
+        const isBestShort = bestShort && e.key === bestShort.key;
+        const isBestLong  = bestLong  && e.key === bestLong.key;
+        let cls = isPos
+          ? (isBestShort ? 'pos best-pos' : 'pos')
+          : isNeg
+            ? (isBestLong ? 'neg best-neg' : 'neg')
+            : 'neu';
+        // Add strategy hint on best cells
+        const hint = isBestShort ? ' · SHORT' : isBestLong ? ' · LONG' : '';
+        return `<span class="hip3-cell ${cls}"><span class="lbl">${e.builder} ${e.lev}x${hint}</span><span class="val">${e.fd.str}</span></span>`;
       }).join(' ');
 
       tdCells.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">${cellsHtml}</div>`;
       tr.appendChild(tdCells);
 
-      // Best pick
+      // Best pick column — show both long and short if applicable
       const tdBest = document.createElement('td');
-      if (bestCoin && bestType) {
-        const annVal = Math.abs(parseInt(bestCoin.fd.ann));
-        const cls = bestType === 'short' ? 'short' : 'long';
-        const label = bestType === 'short' ? `SHORT ${bestCoin.builder}` : `LONG ${bestCoin.builder}`;
-        tdBest.innerHTML = `<div style="display:flex;flex-direction:column;gap:2px;"><span class="hip3-best ${cls}">${label}</span><span style="font-size:9px;color:rgba(255,255,255,.25);font-family:'DM Mono',monospace;">${annVal}% ann.</span></div>`;
+      const picks = [];
+      if (bestShort) {
+        const ann = Math.abs(parseInt(bestShort.fd.ann));
+        picks.push(`<div style="display:flex;flex-direction:column;gap:1px;"><span class="hip3-best short">SHORT ${bestShort.builder}</span><span style="font-size:9px;color:rgba(248,113,113,.5);font-family:'DM Mono',monospace;">${ann}% ann.</span></div>`);
+      }
+      if (bestLong) {
+        const ann = Math.abs(parseInt(bestLong.fd.ann));
+        picks.push(`<div style="display:flex;flex-direction:column;gap:1px;"><span class="hip3-best long">LONG ${bestLong.builder}</span><span style="font-size:9px;color:rgba(74,222,128,.5);font-family:'DM Mono',monospace;">${ann}% ann.</span></div>`);
+      }
+      if (picks.length > 0) {
+        tdBest.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px;">${picks.join('')}</div>`;
       } else {
         tdBest.innerHTML = `<span class="hip3-best neutral">—</span>`;
       }

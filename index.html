@@ -578,7 +578,7 @@ header {
   white-space: nowrap;
   vertical-align: middle;
 }
-.hip3-asset { font-weight: 700; color: #fff; font-size: 19px; }
+.hip3-asset { font-weight: 700; color: #fff; font-size: 22px; }
 .hip3-cell {
   display: flex;
   flex-direction: column;
@@ -2214,15 +2214,26 @@ requestAnimationFrame(animate);
       meta.universe.forEach((asset, i) => {
         const name = asset.name;
         const funding = ctxs[i]?.funding ?? null;
-        const maxLev = asset.maxLeverage ?? '?';
+        const maxLevRaw = asset.maxLeverage ?? '?';
+        const maxLev = String(maxLevRaw).endsWith('x') ? maxLevRaw : maxLevRaw + 'x';
         const oi = parseFloat(ctxs[i]?.dayNtlVlm ?? ctxs[i]?.openInterest ?? 0);
         const base = name.includes(':') ? name.slice(name.indexOf(':') + 1) : name;
         if (STANDARD_HL.has(base)) return;
         if (!grouped[base]) { grouped[base] = []; groupOI[base] = 0; }
-        grouped[base].push({ key: name, builder: dex, lev: maxLev + 'x', funding, oi });
+        grouped[base].push({ key: name, builder: dex, lev: maxLev, funding, oi });
         groupOI[base] += oi;
       });
     });
+
+    // Merge USA500 and US500 into one row
+    if (grouped['USA500'] || grouped['US500']) {
+      const merged = [...(grouped['USA500'] || []), ...(grouped['US500'] || [])];
+      const mergedOI = (groupOI['USA500'] || 0) + (groupOI['US500'] || 0);
+      grouped['USA500/US500'] = merged;
+      groupOI['USA500/US500'] = mergedOI;
+      delete grouped['USA500']; delete grouped['US500'];
+      delete groupOI['USA500']; delete groupOI['US500'];
+    }
 
     return { grouped, groupOI };
   }
@@ -2265,8 +2276,8 @@ requestAnimationFrame(animate);
       // Negative funding → longs get paid → best LONG = lowest (most negative) rate
       // If multiple entries: show all with color, highlight best per direction
       const withFunding = entries.filter(e => e.fd);
-      const posEntries = withFunding.filter(e => e.fd.raw > 0.00005);
-      const negEntries = withFunding.filter(e => e.fd.raw < -0.00005);
+      const posEntries = withFunding.filter(e => e.fd.raw > 0.000001);
+      const negEntries = withFunding.filter(e => e.fd.raw < -0.000001);
 
       const bestShort = posEntries.length > 0 ? posEntries.reduce((a, b) => a.fd.raw > b.fd.raw ? a : b) : null;
       const bestLong  = negEntries.length > 0 ? negEntries.reduce((a, b) => a.fd.raw < b.fd.raw ? a : b) : null;
@@ -2275,8 +2286,8 @@ requestAnimationFrame(animate);
         const isBestShort = bestShort && e.key === bestShort.key;
         const isBestLong  = bestLong  && e.key === bestLong.key;
         if (!e.fd) return `<span class="hip3-cell neu"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">—</span></span>`;
-        const isPos = e.fd.raw > 0.00005;
-        const isNeg = e.fd.raw < -0.00005;
+        const isPos = e.fd.raw > 0.000001;
+        const isNeg = e.fd.raw < -0.000001;
         let cls = isPos
           ? (isBestShort ? 'pos best-pos' : 'pos')
           : isNeg

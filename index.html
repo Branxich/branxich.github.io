@@ -2285,7 +2285,7 @@ requestAnimationFrame(animate);
       const cellsHtml = entries.map(e => {
         const isBestShort = bestShort && e.key === bestShort.key;
         const isBestLong  = bestLong  && e.key === bestLong.key;
-        if (!e.fd) return `<span class="hip3-cell neu"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">—</span></span>`;
+        if (!e.fd) return `<span class="hip3-cell neu"><span class="lbl">${e.builder}</span><span class="val">—</span></span>`;
         const isPos = e.fd.raw > 0.000001;
         const isNeg = e.fd.raw < -0.000001;
         let cls = isPos
@@ -2305,7 +2305,7 @@ requestAnimationFrame(animate);
           const hedgeTip = isBest && bestShort ? ` · SHORT ${bestShort.builder}` : '';
           badge = `<span class="hip3-action-badge long${isBest ? ' best' : ''}">LONG${hedgeTip}</span><span class="hip3-action-ann">${ann}% ann</span>`;
         }
-        return `<span class="hip3-cell ${cls}"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">${e.fd.str}</span>${badge}</span>`;
+        return `<span class="hip3-cell ${cls}"><span class="lbl">${e.builder}</span><span class="val">${e.fd.str}</span>${badge}</span>`;
       }).join(' ');
 
       // Embed SHORT/LONG label inside each best cell

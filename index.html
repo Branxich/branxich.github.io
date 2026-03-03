@@ -2172,69 +2172,69 @@ requestAnimationFrame(animate);
   // Grouped: same underlying asset → one row, each builder = one column
   const HIP3 = [
     { asset: 'SILVER',   entries: [
-      { key: 'xyz:SILVER-USDC',   builder: 'xyz',  lev: 25 },
-      { key: 'cash:SILVER-USDT',  builder: 'cash', lev: 20 },
-      { key: 'flx:SILVER-USDH',   builder: 'flx',  lev: 20 },
-      { key: 'km:SILVER-USDH',    builder: 'km',   lev: 20 },
+      { key: 'xyz:SILVER',   builder: 'xyz',  lev: 25 },
+      { key: 'cash:SILVER',  builder: 'cash', lev: 20 },
+      { key: 'flx:SILVER',   builder: 'flx',  lev: 20 },
+      { key: 'km:SILVER',    builder: 'km',   lev: 20 },
     ]},
     { asset: 'GOLD',     entries: [
-      { key: 'xyz:GOLD-USDC',     builder: 'xyz',  lev: 25 },
-      { key: 'cash:GOLD-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:GOLD',     builder: 'xyz',  lev: 25 },
+      { key: 'cash:GOLD',    builder: 'cash', lev: 20 },
     ]},
     { asset: 'PLATINUM', entries: [
-      { key: 'xyz:PLATINUM-USDC', builder: 'xyz',  lev: 20 },
-      { key: 'flx:PLATINUM-USDH', builder: 'flx',  lev: 20 },
+      { key: 'xyz:PLATINUM', builder: 'xyz',  lev: 20 },
+      { key: 'flx:PLATINUM', builder: 'flx',  lev: 20 },
     ]},
     { asset: 'NVDA',     entries: [
-      { key: 'xyz:NVDA-USDC',     builder: 'xyz',  lev: 20 },
-      { key: 'cash:NVDA-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:NVDA',     builder: 'xyz',  lev: 20 },
+      { key: 'cash:NVDA',    builder: 'cash', lev: 20 },
     ]},
     { asset: 'TSLA',     entries: [
-      { key: 'xyz:TSLA-USDC',     builder: 'xyz',  lev: 10 },
-      { key: 'cash:TSLA-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:TSLA',     builder: 'xyz',  lev: 10 },
+      { key: 'cash:TSLA',    builder: 'cash', lev: 20 },
     ]},
     { asset: 'HOOD',     entries: [
-      { key: 'xyz:HOOD-USDC',     builder: 'xyz',  lev: 10 },
-      { key: 'cash:HOOD-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:HOOD',     builder: 'xyz',  lev: 10 },
+      { key: 'cash:HOOD',    builder: 'cash', lev: 20 },
     ]},
     { asset: 'GOOGL',    entries: [
-      { key: 'xyz:GOOGL-USDC',    builder: 'xyz',  lev: 10 },
-      { key: 'cash:GOOGL-USDT',   builder: 'cash', lev: 20 },
+      { key: 'xyz:GOOGL',    builder: 'xyz',  lev: 10 },
+      { key: 'cash:GOOGL',   builder: 'cash', lev: 20 },
     ]},
     { asset: 'AMZN',     entries: [
-      { key: 'xyz:AMZN-USDC',     builder: 'xyz',  lev: 10 },
-      { key: 'cash:AMZN-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:AMZN',     builder: 'xyz',  lev: 10 },
+      { key: 'cash:AMZN',    builder: 'cash', lev: 20 },
     ]},
     { asset: 'INTC',     entries: [
-      { key: 'xyz:INTC-USDC',     builder: 'xyz',  lev: 10 },
-      { key: 'cash:INTC-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:INTC',     builder: 'xyz',  lev: 10 },
+      { key: 'cash:INTC',    builder: 'cash', lev: 20 },
     ]},
     { asset: 'USA500',   entries: [
-      { key: 'cash:USA500-USDT',  builder: 'cash', lev: 20 },
-      { key: 'km:US500-USDH',     builder: 'km',   lev: 25 },
+      { key: 'cash:USA500',  builder: 'cash', lev: 20 },
+      { key: 'km:US500',     builder: 'km',   lev: 25 },
     ]},
     { asset: 'OIL/CL',  entries: [
-      { key: 'xyz:CL-USDC',       builder: 'xyz',  lev: 20 },
-      { key: 'flx:OIL-USDH',      builder: 'flx',  lev: 15 },
+      { key: 'xyz:CL',       builder: 'xyz',  lev: 20 },
+      { key: 'flx:OIL',      builder: 'flx',  lev: 15 },
     ]},
-    { asset: 'ETH',      entries: [{ key: 'hyna:ETH-USDE',    builder: 'hyna', lev: 25 }]},
-    { asset: 'BTC',      entries: [{ key: 'hyna:BTC-USDE',    builder: 'hyna', lev: 40 }]},
-    { asset: 'HYPE',     entries: [{ key: 'hyna:HYPE-USDE',   builder: 'hyna', lev: 10 }]},
-    { asset: 'XYZ100',   entries: [{ key: 'xyz:XYZ100-USDC',  builder: 'xyz',  lev: 30 }]},
-    { asset: 'EUR',      entries: [{ key: 'xyz:EUR-USDC',     builder: 'xyz',  lev: 50 }]},
-    { asset: 'USDJPY',   entries: [{ key: 'xyz:USDJPY-USDC',  builder: 'xyz',  lev: 50 }]},
-    { asset: 'COPPER',   entries: [{ key: 'xyz:COPPER-USDC',  builder: 'xyz',  lev: 20 }]},
-    { asset: 'NATGAS',   entries: [{ key: 'xyz:NATGAS-USDC',  builder: 'xyz',  lev: 10 }]},
-    { asset: 'PLTR',     entries: [{ key: 'xyz:PLTR-USDC',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'MSTR',     entries: [{ key: 'xyz:MSTR-USDC',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'COIN',     entries: [{ key: 'xyz:COIN-USDC',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'CRCL',     entries: [{ key: 'xyz:CRCL-USDC',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'AAPL',     entries: [{ key: 'xyz:AAPL-USDC',    builder: 'xyz',  lev: 20 }]},
-    { asset: 'MU',       entries: [{ key: 'xyz:MU-USDC',      builder: 'xyz',  lev: 10 }]},
-    { asset: 'EWY',      entries: [{ key: 'cash:EWY-USDT',    builder: 'cash', lev: 20 }]},
-    { asset: 'SNDK',     entries: [{ key: 'xyz:SNDK-USDC',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'SMSN',     entries: [{ key: 'xyz:SMSN-USDC',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'SKHX',     entries: [{ key: 'xyz:SKHX-USDC',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'ETH',      entries: [{ key: 'hyna:ETH',    builder: 'hyna', lev: 25 }]},
+    { asset: 'BTC',      entries: [{ key: 'hyna:BTC',    builder: 'hyna', lev: 40 }]},
+    { asset: 'HYPE',     entries: [{ key: 'hyna:HYPE',   builder: 'hyna', lev: 10 }]},
+    { asset: 'XYZ100',   entries: [{ key: 'xyz:XYZ100',  builder: 'xyz',  lev: 30 }]},
+    { asset: 'EUR',      entries: [{ key: 'xyz:EUR',     builder: 'xyz',  lev: 50 }]},
+    { asset: 'USDJPY',   entries: [{ key: 'xyz:JPY',  builder: 'xyz',  lev: 50 }]},
+    { asset: 'COPPER',   entries: [{ key: 'xyz:COPPER',  builder: 'xyz',  lev: 20 }]},
+    { asset: 'NATGAS',   entries: [{ key: 'xyz:NATGAS',  builder: 'xyz',  lev: 10 }]},
+    { asset: 'PLTR',     entries: [{ key: 'xyz:PLTR',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'MSTR',     entries: [{ key: 'xyz:MSTR',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'COIN',     entries: [{ key: 'xyz:COIN',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'CRCL',     entries: [{ key: 'xyz:CRCL',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'AAPL',     entries: [{ key: 'xyz:AAPL',    builder: 'xyz',  lev: 20 }]},
+    { asset: 'MU',       entries: [{ key: 'xyz:MU',      builder: 'xyz',  lev: 10 }]},
+    { asset: 'EWY',      entries: [{ key: 'cash:EWY',    builder: 'cash', lev: 20 }]},
+    { asset: 'SNDK',     entries: [{ key: 'xyz:SNDK',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'SMSN',     entries: [{ key: 'xyz:SMSN',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'SKHX',     entries: [{ key: 'xyz:SKHX',    builder: 'xyz',  lev: 10 }]},
   ];
 
   async function hlPost(body) {
@@ -2254,16 +2254,14 @@ requestAnimationFrame(animate);
       DEXES.map(dex => hlPost({ type: 'metaAndAssetCtxs', dex }))
     );
 
-    // Build unified funding map: "dex:COIN" -> funding rate
+    // API returns names already prefixed like "xyz:TSLA", "cash:GOLD-USDT"
     const fundingMap = {};
     DEXES.forEach((dex, di) => {
       const [meta, ctxs] = results[di];
       if (!meta?.universe) return;
       meta.universe.forEach((asset, i) => {
-        const key = `${dex}:${asset.name}`;
-        fundingMap[key] = ctxs[i]?.funding ?? null;
-        // Debug
-        console.log(`${key} -> ${ctxs[i]?.funding}`);
+        // Use asset.name as-is — it already includes the dex prefix
+        fundingMap[asset.name] = ctxs[i]?.funding ?? null;
       });
     });
 

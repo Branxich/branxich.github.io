@@ -580,7 +580,7 @@ header {
 }
 .hip3-asset { font-weight: 700; color: #fff; font-size: 19px; }
 .hip3-cell {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   align-items: center;
   padding: 8px 12px;
@@ -593,14 +593,15 @@ header {
 }
 .hip3-cell .lbl { font-size: 9px; letter-spacing: .08em; color: rgba(255,255,255,.55); text-transform: uppercase; }
 .hip3-cell .val { font-weight: 700; font-size: 15px; }
-.hip3-cell.pos { background: rgba(74,222,128,.08); border-color: rgba(74,222,128,.2); }
+.hip3-cell.pos { background: rgba(74,222,128,.08); border-color: rgba(74,222,128,.35); }
 .hip3-cell.pos .val { color: #4ade80; }
-.hip3-cell.neg { background: rgba(248,113,113,.08); border-color: rgba(248,113,113,.2); }
+.hip3-cell.neg { background: rgba(248,113,113,.08); border-color: rgba(248,113,113,.35); }
 .hip3-cell.neg .val { color: #f87171; }
+.hip3-cell.neu { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.15); }
 .hip3-cell.neu .val { color: rgba(255,255,255,.55); }
-.hip3-cell.best-pos { background: rgba(74,222,128,.13); border-color: rgba(74,222,128,.4); }
+.hip3-cell.best-pos { background: rgba(74,222,128,.16); border-color: rgba(74,222,128,.6); }
 .hip3-cell.best-pos .val { color: #4ade80; }
-.hip3-cell.best-neg { background: rgba(248,113,113,.13); border-color: rgba(248,113,113,.4); }
+.hip3-cell.best-neg { background: rgba(248,113,113,.16); border-color: rgba(248,113,113,.6); }
 .hip3-cell.best-neg .val { color: #f87171; }
 .hip3-action-badge {
   font-size: 9px;
@@ -2214,7 +2215,7 @@ requestAnimationFrame(animate);
         const name = asset.name;
         const funding = ctxs[i]?.funding ?? null;
         const maxLev = asset.maxLeverage ?? '?';
-        const oi = parseFloat(ctxs[i]?.openInterest ?? 0);
+        const oi = parseFloat(ctxs[i]?.dayNtlVlm ?? ctxs[i]?.openInterest ?? 0);
         const base = name.includes(':') ? name.slice(name.indexOf(':') + 1) : name;
         if (STANDARD_HL.has(base)) return;
         if (!grouped[base]) { grouped[base] = []; groupOI[base] = 0; }

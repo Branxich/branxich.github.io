@@ -504,6 +504,128 @@ header {
   .tweets-grid { grid-template-columns: 1fr; }
 }
 
+/* ── HIP-3 Funding ──────────────────────────────────── */
+.hip3-wrap {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto 40px;
+  background: rgba(10,10,14,.75);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 28px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: 28px 32px 36px;
+}
+.hip3-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.hip3-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+}
+.hip3-updated {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,.25);
+}
+.hip3-refresh {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.4);
+  border-radius: 8px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.hip3-refresh:hover { background: rgba(255,255,255,.1); color: #fff; }
+.hip3-table-wrap { overflow-x: auto; }
+.hip3-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+}
+.hip3-table thead th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.2);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  white-space: nowrap;
+}
+.hip3-table tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  transition: background .15s;
+}
+.hip3-table tbody tr:last-child { border-bottom: none; }
+.hip3-table tbody tr:hover { background: rgba(255,255,255,.03); }
+.hip3-table tbody td {
+  padding: 9px 12px;
+  color: rgba(255,255,255,.6);
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.hip3-asset { font-weight: 700; color: #fff; font-size: 13px; }
+.hip3-cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-size: 11px;
+  line-height: 1.4;
+}
+.hip3-cell .lbl { font-size: 8px; letter-spacing: .08em; color: rgba(255,255,255,.25); text-transform: uppercase; }
+.hip3-cell .val { font-weight: 600; }
+.hip3-cell.pos { background: rgba(74,222,128,.07); border-color: rgba(74,222,128,.15); }
+.hip3-cell.pos .val { color: #4ade80; }
+.hip3-cell.neg { background: rgba(248,113,113,.07); border-color: rgba(248,113,113,.15); }
+.hip3-cell.neg .val { color: #f87171; }
+.hip3-cell.neu .val { color: rgba(255,255,255,.35); }
+.hip3-cell.best-pos { background: rgba(74,222,128,.15); border-color: rgba(74,222,128,.4); }
+.hip3-cell.best-pos .val { color: #4ade80; }
+.hip3-cell.best-neg { background: rgba(248,113,113,.15); border-color: rgba(248,113,113,.4); }
+.hip3-cell.best-neg .val { color: #f87171; }
+.hip3-best {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.hip3-best.long { background: rgba(74,222,128,.12); border: 1px solid rgba(74,222,128,.25); color: #4ade80; }
+.hip3-best.short { background: rgba(248,113,113,.12); border: 1px solid rgba(248,113,113,.25); color: #f87171; }
+.hip3-best.neutral { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.3); }
+.hip3-loading {
+  text-align: center;
+  padding: 48px 16px;
+  color: rgba(255,255,255,.2);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+}
+.hip3-spinner {
+  width: 20px; height: 20px;
+  border: 2px solid rgba(255,255,255,.1);
+  border-top-color: rgba(0,234,255,.5);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+
 footer {
   margin-top: 72px;
   font-family: 'DM Mono', monospace;
@@ -997,6 +1119,7 @@ footer {
     <div class="pill-indicator" id="pillIndicator"></div>
     <button class="pill-btn active" data-page="dex">Perp DEX List</button>
     <button class="pill-btn" data-page="airdrop">Airdrop Calculator</button>
+    <button class="pill-btn" data-page="hip3">HIP-3 Funding</button>
   </nav>
 
   <!-- PAGE: DEX List -->
@@ -1159,6 +1282,36 @@ footer {
       </div>
     </div>
   </div><!-- /page-airdrop -->
+
+  <!-- PAGE: HIP-3 Funding -->
+  <div class="section-page" id="page-hip3">
+    <div class="hip3-wrap">
+      <div class="hip3-header">
+        <span class="hip3-title">HIP-3 Funding Rates</span>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="hip3-refresh" id="hip3Refresh">↻ Refresh</button>
+          <span class="hip3-updated" id="hip3Updated">—</span>
+        </div>
+      </div>
+      <div class="hip3-table-wrap">
+        <table class="hip3-table">
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th colspan="4">Funding per builder (1h) — best highlighted</th>
+              <th>Best pick</th>
+            </tr>
+          </thead>
+          <tbody id="hip3Body">
+            <tr><td colspan="6" class="hip3-loading">
+              <div class="hip3-spinner"></div>
+              Fetching live data...
+            </td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /page-hip3 -->
 
   <footer>© 2026 Branxi</footer>
 </div>
@@ -2010,8 +2163,204 @@ requestAnimationFrame(animate);
       const pageId = 'page-' + btn.dataset.page;
       document.querySelectorAll('.section-page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
+
+      if (btn.dataset.page === 'hip3') loadHip3();
     });
   });
+
+  // ── HIP-3 Funding ───────────────────────────────────────
+  // Grouped: same underlying asset → one row, each builder = one column
+  const HIP3 = [
+    { asset: 'SILVER',   entries: [
+      { coin: 'SILVER-USDC',  builder: 'xyz',  lev: 25 },
+      { coin: 'SILVER-USDT',  builder: 'cash', lev: 20 },
+      { coin: 'SILVER-USDH',  builder: 'flx',  lev: 20 },
+      { coin: 'SILVER-USDH',  builder: 'km',   lev: 20 },
+    ]},
+    { asset: 'GOLD',     entries: [
+      { coin: 'GOLD-USDC',    builder: 'xyz',  lev: 25 },
+      { coin: 'GOLD-USDT',    builder: 'cash', lev: 20 },
+    ]},
+    { asset: 'PLATINUM', entries: [
+      { coin: 'PLATINUM-USDC', builder: 'xyz',  lev: 20 },
+      { coin: 'PLATINUM-USDH', builder: 'flx',  lev: 20 },
+    ]},
+    { asset: 'NVDA',     entries: [
+      { coin: 'NVDA-USDC',    builder: 'xyz',  lev: 20 },
+      { coin: 'NVDA-USDT',    builder: 'cash', lev: 20 },
+    ]},
+    { asset: 'TSLA',     entries: [
+      { coin: 'TSLA-USDC',    builder: 'xyz',  lev: 10 },
+      { coin: 'TSLA-USDT',    builder: 'cash', lev: 20 },
+    ]},
+    { asset: 'HOOD',     entries: [
+      { coin: 'HOOD-USDC',    builder: 'xyz',  lev: 10 },
+      { coin: 'HOOD-USDT',    builder: 'cash', lev: 20 },
+    ]},
+    { asset: 'GOOGL',    entries: [
+      { coin: 'GOOGL-USDC',   builder: 'xyz',  lev: 10 },
+      { coin: 'GOOGL-USDT',   builder: 'cash', lev: 20 },
+    ]},
+    { asset: 'AMZN',     entries: [
+      { coin: 'AMZN-USDC',    builder: 'xyz',  lev: 10 },
+      { coin: 'AMZN-USDT',    builder: 'cash', lev: 20 },
+    ]},
+    { asset: 'INTC',     entries: [
+      { coin: 'INTC-USDC',    builder: 'xyz',  lev: 10 },
+      { coin: 'INTC-USDT',    builder: 'cash', lev: 20 },
+    ]},
+    { asset: 'USA500/US500', entries: [
+      { coin: 'USA500-USDT',  builder: 'cash', lev: 20 },
+      { coin: 'US500-USDH',   builder: 'km',   lev: 25 },
+    ]},
+    { asset: 'OIL/CL',  entries: [
+      { coin: 'CL-USDC',      builder: 'xyz',  lev: 20 },
+      { coin: 'OIL-USDH',     builder: 'flx',  lev: 15 },
+    ]},
+    { asset: 'ETH',      entries: [{ coin: 'ETH-USDE',   builder: 'hyna', lev: 25 }]},
+    { asset: 'BTC',      entries: [{ coin: 'BTC-USDE',   builder: 'hyna', lev: 40 }]},
+    { asset: 'HYPE',     entries: [{ coin: 'HYPE-USDE',  builder: 'hyna', lev: 10 }]},
+    { asset: 'XYZ100',   entries: [{ coin: 'XYZ100-USDC',builder: 'xyz',  lev: 30 }]},
+    { asset: 'EUR',      entries: [{ coin: 'EUR-USDC',   builder: 'xyz',  lev: 50 }]},
+    { asset: 'USDJPY',   entries: [{ coin: 'USDJPY-USDC',builder: 'xyz',  lev: 50 }]},
+    { asset: 'COPPER',   entries: [{ coin: 'COPPER-USDC',builder: 'xyz',  lev: 20 }]},
+    { asset: 'NATGAS',   entries: [{ coin: 'NATGAS-USDC',builder: 'xyz',  lev: 10 }]},
+    { asset: 'PLTR',     entries: [{ coin: 'PLTR-USDC',  builder: 'xyz',  lev: 10 }]},
+    { asset: 'MSTR',     entries: [{ coin: 'MSTR-USDC',  builder: 'xyz',  lev: 10 }]},
+    { asset: 'COIN',     entries: [{ coin: 'COIN-USDC',  builder: 'xyz',  lev: 10 }]},
+    { asset: 'CRCL',     entries: [{ coin: 'CRCL-USDC',  builder: 'xyz',  lev: 10 }]},
+    { asset: 'AAPL',     entries: [{ coin: 'AAPL-USDC',  builder: 'xyz',  lev: 20 }]},
+    { asset: 'MU',       entries: [{ coin: 'MU-USDC',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'EWY',      entries: [{ coin: 'EWY-USDT',   builder: 'cash', lev: 20 }]},
+    { asset: 'SNDK',     entries: [{ coin: 'SNDK-USDC',  builder: 'xyz',  lev: 10 }]},
+    { asset: 'SMSN',     entries: [{ coin: 'SMSN-USDC',  builder: 'xyz',  lev: 10 }]},
+    { asset: 'SKHX',     entries: [{ coin: 'SKHX-USDC',  builder: 'xyz',  lev: 10 }]},
+  ];
+
+  async function fetchFunding() {
+    // Use Claude API as CORS proxy to reach Hyperliquid
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 8000,
+        system: 'You are a data proxy. When asked to fetch an API, return ONLY the raw JSON with no explanation, no markdown, no code blocks.',
+        messages: [{
+          role: 'user',
+          content: 'Fetch https://api.hyperliquid.xyz/info via POST with body {"type":"metaAndAssetCtxs"} and return ONLY the raw JSON array response.'
+        }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.map(b => b.text || '').join('') || '';
+    // Extract JSON array from response
+    const match = text.match(/\[\s*\{[\s\S]*\}\s*,\s*\[[\s\S]*\]\s*\]/);
+    if (!match) throw new Error('parse fail');
+    return JSON.parse(match[0]);
+  }
+
+  function fmtFunding(f) {
+    if (f === null || f === undefined) return null;
+    const v = parseFloat(f);
+    const sign = v >= 0 ? '+' : '';
+    return { raw: v, str: sign + (v * 100).toFixed(4) + '%', ann: (v * 24 * 365 * 100).toFixed(0) };
+  }
+
+  function renderHip3(fundingMap) {
+    const tbody = document.getElementById('hip3Body');
+    tbody.innerHTML = '';
+
+    HIP3.forEach(group => {
+      const tr = document.createElement('tr');
+
+      // Asset name
+      const tdAsset = document.createElement('td');
+      tdAsset.innerHTML = `<span class="hip3-asset">${group.asset}</span>`;
+      tr.appendChild(tdAsset);
+
+      // One cell per entry
+      const tdCells = document.createElement('td');
+      tdCells.colSpan = 4;
+      tdCells.style.padding = '6px 12px';
+
+      const entries = group.entries.map(e => {
+        const fd = fmtFunding(fundingMap[e.coin]);
+        return { ...e, fd };
+      });
+
+      // Find best: if any positive → best = highest positive (earn by being short, pay to be long)
+      // Strategy: positive funding → SHORT earns; negative → LONG earns
+      const withFunding = entries.filter(e => e.fd);
+      let bestCoin = null, bestType = null;
+      if (withFunding.length > 0) {
+        const maxPos = withFunding.filter(e => e.fd.raw > 0.00005);
+        const maxNeg = withFunding.filter(e => e.fd.raw < -0.00005);
+        if (maxPos.length > 0) {
+          bestCoin = maxPos.reduce((a, b) => a.fd.raw > b.fd.raw ? a : b);
+          bestType = 'short';
+        } else if (maxNeg.length > 0) {
+          bestCoin = maxNeg.reduce((a, b) => a.fd.raw < b.fd.raw ? a : b);
+          bestType = 'long';
+        }
+      }
+
+      const cellsHtml = entries.map(e => {
+        if (!e.fd) return `<span class="hip3-cell neu"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">—</span></span>`;
+        const isPos = e.fd.raw > 0.00005;
+        const isNeg = e.fd.raw < -0.00005;
+        const isBest = bestCoin && e.coin === bestCoin.coin && e.builder === bestCoin.builder;
+        let cls = isPos ? (isBest ? 'pos best-pos' : 'pos') : isNeg ? (isBest ? 'neg best-neg' : 'neg') : 'neu';
+        return `<span class="hip3-cell ${cls}"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">${e.fd.str}</span></span>`;
+      }).join(' ');
+
+      tdCells.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">${cellsHtml}</div>`;
+      tr.appendChild(tdCells);
+
+      // Best pick
+      const tdBest = document.createElement('td');
+      if (bestCoin && bestType) {
+        const annVal = Math.abs(parseInt(bestCoin.fd.ann));
+        const cls = bestType === 'short' ? 'short' : 'long';
+        const label = bestType === 'short' ? `SHORT ${bestCoin.builder}` : `LONG ${bestCoin.builder}`;
+        tdBest.innerHTML = `<div style="display:flex;flex-direction:column;gap:2px;"><span class="hip3-best ${cls}">${label}</span><span style="font-size:9px;color:rgba(255,255,255,.25);font-family:'DM Mono',monospace;">${annVal}% ann.</span></div>`;
+      } else {
+        tdBest.innerHTML = `<span class="hip3-best neutral">—</span>`;
+      }
+      tr.appendChild(tdBest);
+
+      tbody.appendChild(tr);
+    });
+
+    const now = new Date();
+    document.getElementById('hip3Updated').textContent =
+      'Updated ' + now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  async function loadHip3() {
+    const tbody = document.getElementById('hip3Body');
+    tbody.innerHTML = '<tr><td colspan="6" class="hip3-loading"><div class="hip3-spinner"></div>Fetching live data via Claude proxy...</td></tr>';
+
+    try {
+      const [meta, ctxs] = await fetchFunding();
+      const fundingMap = {};
+      meta.universe.forEach((asset, i) => { fundingMap[asset.name] = ctxs[i]?.funding ?? null; });
+      renderHip3(fundingMap);
+      document.getElementById('hip3Refresh').addEventListener('click', async () => {
+        tbody.innerHTML = '<tr><td colspan="6" class="hip3-loading"><div class="hip3-spinner"></div>Refreshing...</td></tr>';
+        try {
+          const [m2, c2] = await fetchFunding();
+          const fm2 = {};
+          m2.universe.forEach((a, i) => { fm2[a.name] = c2[i]?.funding ?? null; });
+          renderHip3(fm2);
+        } catch(e) {
+          tbody.innerHTML = `<tr><td colspan="6" class="hip3-loading">Ошибка обновления</td></tr>`;
+        }
+      });
+    } catch(e) {
+      tbody.innerHTML = `<tr><td colspan="6" class="hip3-loading">⚠ Не удалось загрузить данные.<br><span style="font-size:10px;opacity:.5;">${e.message}</span></td></tr>`;
+    }
+  }
 })();
 
 </script>

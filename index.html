@@ -581,12 +581,13 @@ header {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  min-width: 80px;
-  padding: 4px 8px;
+  padding: 5px 8px;
   border-radius: 8px;
   border: 1px solid transparent;
   font-size: 11px;
   line-height: 1.4;
+  text-align: center;
+  overflow: hidden;
 }
 .hip3-cell .lbl { font-size: 8px; letter-spacing: .08em; color: rgba(255,255,255,.25); text-transform: uppercase; }
 .hip3-cell .val { font-weight: 600; }
@@ -1298,7 +1299,7 @@ footer {
           <thead>
             <tr>
               <th>Asset</th>
-              <th colspan="4">Funding per builder (1h) — best highlighted</th>
+              <th style="width:100%">Funding per builder (1h) — best highlighted</th>
               <th>Best pick</th>
             </tr>
           </thead>
@@ -2289,8 +2290,8 @@ requestAnimationFrame(animate);
 
       // One cell per entry
       const tdCells = document.createElement('td');
-      tdCells.colSpan = 4;
       tdCells.style.padding = '6px 12px';
+      tdCells.style.width = '100%';
 
       const entries = group.entries.map(e => {
         const fd = fmtFunding(fundingMap[e.key]);
@@ -2324,7 +2325,7 @@ requestAnimationFrame(animate);
         return `<span class="hip3-cell ${cls}"><span class="lbl">${e.builder} ${e.lev}x${hint}</span><span class="val">${e.fd.str}</span></span>`;
       }).join(' ');
 
-      tdCells.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;">${cellsHtml}</div>`;
+      tdCells.innerHTML = `<div style="display:flex;flex-wrap:nowrap;gap:8px;align-items:center;width:100%;">${cellsHtml.replace(/class="hip3-cell/g, 'style="flex:1;min-width:0;" class="hip3-cell')}</div>`;
       tr.appendChild(tdCells);
 
       // Best pick column — show both long and short if applicable

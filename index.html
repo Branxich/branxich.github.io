@@ -2243,7 +2243,14 @@ requestAnimationFrame(animate);
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ type: 'metaAndAssetCtxs' })
     });
-    return await resp.json();
+    const data = await resp.json();
+    // Debug: log all coin names to console so we can see exact names
+    if (Array.isArray(data) && data[0]?.universe) {
+      const names = data[0].universe.map((a,i) => `${a.name}: ${data[1][i]?.funding ?? 'null'}`);
+      console.log('=== ALL HYPERLIQUID COINS ===');
+      names.forEach(n => console.log(n));
+    }
+    return data;
   }
 
   function fmtFunding(f) {

@@ -2172,69 +2172,69 @@ requestAnimationFrame(animate);
   // Grouped: same underlying asset → one row, each builder = one column
   const HIP3 = [
     { asset: 'SILVER',   entries: [
-      { coin: 'SILVER-USDC',  builder: 'xyz',  lev: 25 },
-      { coin: 'SILVER-USDT',  builder: 'cash', lev: 20 },
-      { coin: 'SILVER-USDH',  builder: 'flx',  lev: 20 },
-      { coin: 'SILVER-USDH',  builder: 'km',   lev: 20 },
+      { key: 'xyz:SILVER-USDC',   builder: 'xyz',  lev: 25 },
+      { key: 'cash:SILVER-USDT',  builder: 'cash', lev: 20 },
+      { key: 'flx:SILVER-USDH',   builder: 'flx',  lev: 20 },
+      { key: 'km:SILVER-USDH',    builder: 'km',   lev: 20 },
     ]},
     { asset: 'GOLD',     entries: [
-      { coin: 'GOLD-USDC',    builder: 'xyz',  lev: 25 },
-      { coin: 'GOLD-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:GOLD-USDC',     builder: 'xyz',  lev: 25 },
+      { key: 'cash:GOLD-USDT',    builder: 'cash', lev: 20 },
     ]},
     { asset: 'PLATINUM', entries: [
-      { coin: 'PLATINUM-USDC', builder: 'xyz',  lev: 20 },
-      { coin: 'PLATINUM-USDH', builder: 'flx',  lev: 20 },
+      { key: 'xyz:PLATINUM-USDC', builder: 'xyz',  lev: 20 },
+      { key: 'flx:PLATINUM-USDH', builder: 'flx',  lev: 20 },
     ]},
     { asset: 'NVDA',     entries: [
-      { coin: 'NVDA-USDC',    builder: 'xyz',  lev: 20 },
-      { coin: 'NVDA-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:NVDA-USDC',     builder: 'xyz',  lev: 20 },
+      { key: 'cash:NVDA-USDT',    builder: 'cash', lev: 20 },
     ]},
     { asset: 'TSLA',     entries: [
-      { coin: 'TSLA-USDC',    builder: 'xyz',  lev: 10 },
-      { coin: 'TSLA-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:TSLA-USDC',     builder: 'xyz',  lev: 10 },
+      { key: 'cash:TSLA-USDT',    builder: 'cash', lev: 20 },
     ]},
     { asset: 'HOOD',     entries: [
-      { coin: 'HOOD-USDC',    builder: 'xyz',  lev: 10 },
-      { coin: 'HOOD-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:HOOD-USDC',     builder: 'xyz',  lev: 10 },
+      { key: 'cash:HOOD-USDT',    builder: 'cash', lev: 20 },
     ]},
     { asset: 'GOOGL',    entries: [
-      { coin: 'GOOGL-USDC',   builder: 'xyz',  lev: 10 },
-      { coin: 'GOOGL-USDT',   builder: 'cash', lev: 20 },
+      { key: 'xyz:GOOGL-USDC',    builder: 'xyz',  lev: 10 },
+      { key: 'cash:GOOGL-USDT',   builder: 'cash', lev: 20 },
     ]},
     { asset: 'AMZN',     entries: [
-      { coin: 'AMZN-USDC',    builder: 'xyz',  lev: 10 },
-      { coin: 'AMZN-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:AMZN-USDC',     builder: 'xyz',  lev: 10 },
+      { key: 'cash:AMZN-USDT',    builder: 'cash', lev: 20 },
     ]},
     { asset: 'INTC',     entries: [
-      { coin: 'INTC-USDC',    builder: 'xyz',  lev: 10 },
-      { coin: 'INTC-USDT',    builder: 'cash', lev: 20 },
+      { key: 'xyz:INTC-USDC',     builder: 'xyz',  lev: 10 },
+      { key: 'cash:INTC-USDT',    builder: 'cash', lev: 20 },
     ]},
-    { asset: 'USA500/US500', entries: [
-      { coin: 'USA500-USDT',  builder: 'cash', lev: 20 },
-      { coin: 'US500-USDH',   builder: 'km',   lev: 25 },
+    { asset: 'USA500',   entries: [
+      { key: 'cash:USA500-USDT',  builder: 'cash', lev: 20 },
+      { key: 'km:US500-USDH',     builder: 'km',   lev: 25 },
     ]},
     { asset: 'OIL/CL',  entries: [
-      { coin: 'CL-USDC',      builder: 'xyz',  lev: 20 },
-      { coin: 'OIL-USDH',     builder: 'flx',  lev: 15 },
+      { key: 'xyz:CL-USDC',       builder: 'xyz',  lev: 20 },
+      { key: 'flx:OIL-USDH',      builder: 'flx',  lev: 15 },
     ]},
-    { asset: 'ETH',      entries: [{ coin: 'ETH-USDE',   builder: 'hyna', lev: 25 }]},
-    { asset: 'BTC',      entries: [{ coin: 'BTC-USDE',   builder: 'hyna', lev: 40 }]},
-    { asset: 'HYPE',     entries: [{ coin: 'HYPE-USDE',  builder: 'hyna', lev: 10 }]},
-    { asset: 'XYZ100',   entries: [{ coin: 'XYZ100-USDC',builder: 'xyz',  lev: 30 }]},
-    { asset: 'EUR',      entries: [{ coin: 'EUR-USDC',   builder: 'xyz',  lev: 50 }]},
-    { asset: 'USDJPY',   entries: [{ coin: 'USDJPY-USDC',builder: 'xyz',  lev: 50 }]},
-    { asset: 'COPPER',   entries: [{ coin: 'COPPER-USDC',builder: 'xyz',  lev: 20 }]},
-    { asset: 'NATGAS',   entries: [{ coin: 'NATGAS-USDC',builder: 'xyz',  lev: 10 }]},
-    { asset: 'PLTR',     entries: [{ coin: 'PLTR-USDC',  builder: 'xyz',  lev: 10 }]},
-    { asset: 'MSTR',     entries: [{ coin: 'MSTR-USDC',  builder: 'xyz',  lev: 10 }]},
-    { asset: 'COIN',     entries: [{ coin: 'COIN-USDC',  builder: 'xyz',  lev: 10 }]},
-    { asset: 'CRCL',     entries: [{ coin: 'CRCL-USDC',  builder: 'xyz',  lev: 10 }]},
-    { asset: 'AAPL',     entries: [{ coin: 'AAPL-USDC',  builder: 'xyz',  lev: 20 }]},
-    { asset: 'MU',       entries: [{ coin: 'MU-USDC',    builder: 'xyz',  lev: 10 }]},
-    { asset: 'EWY',      entries: [{ coin: 'EWY-USDT',   builder: 'cash', lev: 20 }]},
-    { asset: 'SNDK',     entries: [{ coin: 'SNDK-USDC',  builder: 'xyz',  lev: 10 }]},
-    { asset: 'SMSN',     entries: [{ coin: 'SMSN-USDC',  builder: 'xyz',  lev: 10 }]},
-    { asset: 'SKHX',     entries: [{ coin: 'SKHX-USDC',  builder: 'xyz',  lev: 10 }]},
+    { asset: 'ETH',      entries: [{ key: 'hyna:ETH-USDE',    builder: 'hyna', lev: 25 }]},
+    { asset: 'BTC',      entries: [{ key: 'hyna:BTC-USDE',    builder: 'hyna', lev: 40 }]},
+    { asset: 'HYPE',     entries: [{ key: 'hyna:HYPE-USDE',   builder: 'hyna', lev: 10 }]},
+    { asset: 'XYZ100',   entries: [{ key: 'xyz:XYZ100-USDC',  builder: 'xyz',  lev: 30 }]},
+    { asset: 'EUR',      entries: [{ key: 'xyz:EUR-USDC',     builder: 'xyz',  lev: 50 }]},
+    { asset: 'USDJPY',   entries: [{ key: 'xyz:USDJPY-USDC',  builder: 'xyz',  lev: 50 }]},
+    { asset: 'COPPER',   entries: [{ key: 'xyz:COPPER-USDC',  builder: 'xyz',  lev: 20 }]},
+    { asset: 'NATGAS',   entries: [{ key: 'xyz:NATGAS-USDC',  builder: 'xyz',  lev: 10 }]},
+    { asset: 'PLTR',     entries: [{ key: 'xyz:PLTR-USDC',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'MSTR',     entries: [{ key: 'xyz:MSTR-USDC',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'COIN',     entries: [{ key: 'xyz:COIN-USDC',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'CRCL',     entries: [{ key: 'xyz:CRCL-USDC',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'AAPL',     entries: [{ key: 'xyz:AAPL-USDC',    builder: 'xyz',  lev: 20 }]},
+    { asset: 'MU',       entries: [{ key: 'xyz:MU-USDC',      builder: 'xyz',  lev: 10 }]},
+    { asset: 'EWY',      entries: [{ key: 'cash:EWY-USDT',    builder: 'cash', lev: 20 }]},
+    { asset: 'SNDK',     entries: [{ key: 'xyz:SNDK-USDC',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'SMSN',     entries: [{ key: 'xyz:SMSN-USDC',    builder: 'xyz',  lev: 10 }]},
+    { asset: 'SKHX',     entries: [{ key: 'xyz:SKHX-USDC',    builder: 'xyz',  lev: 10 }]},
   ];
 
   async function hlPost(body) {
@@ -2247,32 +2247,27 @@ requestAnimationFrame(animate);
   }
 
   async function fetchFunding() {
-    // HIP-3 builder perps live in a separate universe — fetch via "perpsAtTime" or check spot
-    // Try spotMetaAndAssetCtxs which includes builder-deployed markets
-    const [standard, spot] = await Promise.all([
-      hlPost({ type: 'metaAndAssetCtxs' }),
-      hlPost({ type: 'spotMetaAndAssetCtxs' }),
-    ]);
+    // HIP-3 perps live on separate DEXs — must query each with dex parameter
+    const DEXES = ['xyz', 'cash', 'flx', 'km', 'hyna'];
 
-    console.log('=== STANDARD PERPS:', standard[0]?.universe?.length);
-    console.log('=== SPOT MARKETS:', spot[0]?.universe?.length);
+    const results = await Promise.all(
+      DEXES.map(dex => hlPost({ type: 'metaAndAssetCtxs', dex }))
+    );
 
-    // Log spot markets to find HIP-3
-    if (spot[0]?.universe) {
-      spot[0].universe.forEach((a,i) => {
-        const name = a.name || JSON.stringify(a);
-        console.log(`SPOT[${i}]: ${name}`);
+    // Build unified funding map: "dex:COIN" -> funding rate
+    const fundingMap = {};
+    DEXES.forEach((dex, di) => {
+      const [meta, ctxs] = results[di];
+      if (!meta?.universe) return;
+      meta.universe.forEach((asset, i) => {
+        const key = `${dex}:${asset.name}`;
+        fundingMap[key] = ctxs[i]?.funding ?? null;
+        // Debug
+        console.log(`${key} -> ${ctxs[i]?.funding}`);
       });
-    }
+    });
 
-    // Also log all standard perps
-    if (standard[0]?.universe) {
-      standard[0].universe.forEach((a,i) => {
-        console.log(`PERP[${i}]: ${a.name} funding=${standard[1][i]?.funding}`);
-      });
-    }
-
-    return standard; // placeholder
+    return fundingMap;
   }
 
   function fmtFunding(f) {
@@ -2300,7 +2295,7 @@ requestAnimationFrame(animate);
       tdCells.style.padding = '6px 12px';
 
       const entries = group.entries.map(e => {
-        const fd = fmtFunding(fundingMap[e.coin]);
+        const fd = fmtFunding(fundingMap[e.key]);
         return { ...e, fd };
       });
 
@@ -2324,7 +2319,7 @@ requestAnimationFrame(animate);
         if (!e.fd) return `<span class="hip3-cell neu"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">—</span></span>`;
         const isPos = e.fd.raw > 0.00005;
         const isNeg = e.fd.raw < -0.00005;
-        const isBest = bestCoin && e.coin === bestCoin.coin && e.builder === bestCoin.builder;
+        const isBest = bestCoin && e.key === bestCoin.key;
         let cls = isPos ? (isBest ? 'pos best-pos' : 'pos') : isNeg ? (isBest ? 'neg best-neg' : 'neg') : 'neu';
         return `<span class="hip3-cell ${cls}"><span class="lbl">${e.builder} ${e.lev}x</span><span class="val">${e.fd.str}</span></span>`;
       }).join(' ');
@@ -2357,21 +2352,13 @@ requestAnimationFrame(animate);
     tbody.innerHTML = '<tr><td colspan="6" class="hip3-loading"><div class="hip3-spinner"></div>Fetching live data...</td></tr>';
 
     try {
-      const [meta, ctxs] = await fetchFunding();
-      const fundingMap = {};
-      meta.universe.forEach((asset, i) => { fundingMap[asset.name] = ctxs[i]?.funding ?? null; });
+      const fundingMap = await fetchFunding();
       renderHip3(fundingMap);
-      document.getElementById('hip3Refresh').addEventListener('click', async () => {
+      document.getElementById('hip3Refresh').onclick = async () => {
         tbody.innerHTML = '<tr><td colspan="6" class="hip3-loading"><div class="hip3-spinner"></div>Refreshing...</td></tr>';
-        try {
-          const [m2, c2] = await fetchFunding();
-          const fm2 = {};
-          m2.universe.forEach((a, i) => { fm2[a.name] = c2[i]?.funding ?? null; });
-          renderHip3(fm2);
-        } catch(e) {
-          tbody.innerHTML = `<tr><td colspan="6" class="hip3-loading">Ошибка обновления</td></tr>`;
-        }
-      });
+        try { renderHip3(await fetchFunding()); }
+        catch(e) { tbody.innerHTML = `<tr><td colspan="6" class="hip3-loading">Ошибка обновления</td></tr>`; }
+      };
     } catch(e) {
       tbody.innerHTML = `<tr><td colspan="6" class="hip3-loading">⚠ Не удалось загрузить данные.<br><span style="font-size:10px;opacity:.5;">${e.message}</span></td></tr>`;
     }

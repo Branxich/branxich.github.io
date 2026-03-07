@@ -2551,7 +2551,7 @@ requestAnimationFrame(animate);
     tbody.innerHTML = '<tr><td colspan="10" class="hip3-loading"><div class="hip3-spinner"></div>Fetching funding data...</td></tr>';
 
     try {
-      const res = await fetch('https://api.loris.tools/funding');
+      const res = await fetch('https://branxi.runov-vlad37.workers.dev/loris');
       tfData = await res.json();
       tfLoaded = true;
       renderTreadFi(tfData);

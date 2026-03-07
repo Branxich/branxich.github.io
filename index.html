@@ -775,7 +775,7 @@ header {
 }
 .tf-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
 }
 .tf-card {
@@ -823,6 +823,20 @@ header {
 }
 .tf-card-side.short { background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.3); }
 .tf-card-side.long  { background: rgba(74,222,128,.08);  border: 1px solid rgba(74,222,128,.3); }
+.tf-side-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.tf-side-logo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: rgba(255,255,255,.07);
+}
 .tf-side-dir { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: .1em; }
 .tf-card-side.short .tf-side-dir { color: #f87171; }
 .tf-card-side.long  .tf-side-dir { color: #4ade80; }
@@ -2583,6 +2597,15 @@ requestAnimationFrame(animate);
     aster:       'aster',
   };
 
+  const TF_LOGOS = {
+    extended:    'assets/logo_extended.png',
+    nado:        'assets/logo_nado.jpeg',
+    paradex:     'https://raw.githubusercontent.com/OG-Branxi/branxi.app/main/assets/logo_paradex.png',
+    pacifica:    'https://raw.githubusercontent.com/OG-Branxi/branxi.app/main/assets/logo_pacifica.png',
+    hyperliquid: 'https://raw.githubusercontent.com/OG-Branxi/branxi.app/main/assets/logo_hyperliquid.png',
+    aster:       'https://raw.githubusercontent.com/OG-Branxi/branxi.app/main/assets/logo_aster.png',
+  };
+
   let tfData = null;
   let tfLoaded = false;
 
@@ -2697,6 +2720,12 @@ requestAnimationFrame(animate);
       const shortSign = op.shortRate >= 0 ? '+' : '';
       const longSign  = op.longRate  >= 0 ? '+' : '';
 
+      const shortLogo = TF_LOGOS[op.shortDex] || '';
+      const longLogo  = TF_LOGOS[op.longDex]  || '';
+      const logoImg = (src, name) => src
+        ? `<img src="${src}" alt="${name}" class="tf-side-logo" onerror="this.style.display='none'">`
+        : '';
+
       return `<div class="tf-card">
         <div class="tf-card-top">
           <span class="tf-card-sym">${op.sym}</span>
@@ -2704,14 +2733,24 @@ requestAnimationFrame(animate);
         </div>
         <div class="tf-card-sides">
           <div class="tf-card-side short">
-            <div class="tf-side-dir">SHORT</div>
-            <div class="tf-side-dex">${op.shortDex}</div>
+            <div class="tf-side-header">
+              ${logoImg(shortLogo, op.shortDex)}
+              <div>
+                <div class="tf-side-dir">SHORT</div>
+                <div class="tf-side-dex">${op.shortDex}</div>
+              </div>
+            </div>
             <div class="tf-side-rate">${shortSign}${shortPct}%</div>
           </div>
           <div class="tf-card-arrow">→</div>
           <div class="tf-card-side long">
-            <div class="tf-side-dir">LONG</div>
-            <div class="tf-side-dex">${op.longDex}</div>
+            <div class="tf-side-header">
+              ${logoImg(longLogo, op.longDex)}
+              <div>
+                <div class="tf-side-dir">LONG</div>
+                <div class="tf-side-dex">${op.longDex}</div>
+              </div>
+            </div>
             <div class="tf-side-rate">${longSign}${longPct}%</div>
           </div>
         </div>

@@ -841,6 +841,13 @@ header {
 .tf-card-side.short .tf-side-dir { color: #f87171; }
 .tf-card-side.long  .tf-side-dir { color: #4ade80; }
 .tf-side-dex { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.7); text-transform: capitalize; }
+.tf-side-ticker {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,.35);
+  margin-bottom: 2px;
+  letter-spacing: .04em;
+}
 .tf-side-rate { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 700; color: rgba(255,255,255,.9); }
 .tf-card-arrow { font-size: 16px; color: rgba(255,255,255,.2); flex-shrink: 0; }
 
@@ -2664,17 +2671,35 @@ requestAnimationFrame(animate);
       }
     }
 
+    // Build reverse map: normalized sym -> { dex -> originalKey }
+    // funding_rates keys are already normalized symbols
+    // But we need to find original ticker names per dex
+    // The API also exposes raw keys — we iterate over each dex's keys to find originals
+    const dexOriginalNames = {}; // dex -> { normalizedSym -> originalKey }
+    activeDexes.forEach(dex => {
+      const apiKey = TF_DEX_MAP[dex];
+      if (!apiKey || !rates[apiKey]) return;
+      dexOriginalNames[dex] = {};
+      // The funding_rates keys ARE the normalized symbols per Loris docs
+      // So original = normalized for this API (already cleaned)
+      Object.keys(rates[apiKey]).forEach(k => {
+        dexOriginalNames[dex][k] = k;
+      });
+    });
+
     // For each symbol, find the best pair opportunity
     const opportunities = [];
     symbols.forEach(sym => {
-      // Get rate for each active dex
+      // Get rate + original name for each active dex
       const dexRates = {};
+      const dexNames = {};
       activeDexes.forEach(dex => {
         const apiKey = TF_DEX_MAP[dex];
         if (!apiKey || !rates[apiKey]) return;
         const raw = rates[apiKey][sym];
         if (raw === undefined || raw === null) return;
         dexRates[dex] = raw / 10000;
+        dexNames[dex] = sym; // same as normalized; API already cleaned
       });
 
       // For each pair, compute combined opportunity
@@ -2683,23 +2708,20 @@ requestAnimationFrame(animate);
         const rB = dexRates[dexB];
         if (rA === undefined || rB === undefined) return;
 
-        // Best combo: SHORT higher funding, LONG lower (or negative)
-        // Net APY = (|rA - rB|) * 24 * 365 * 100
         const diff = rA - rB;
         const netApy = Math.abs(diff) * 24 * 365 * 100;
-        if (netApy < 0.1) return; // skip tiny
+        if (netApy < 0.1) return;
 
-        // Who SHORTs and who LONGs
-        let shortDex, longDex, shortRate, longRate;
+        let shortDex, longDex, shortRate, longRate, shortName, longName;
         if (rA >= rB) {
-          shortDex = dexA; shortRate = rA;
-          longDex  = dexB; longRate  = rB;
+          shortDex = dexA; shortRate = rA; shortName = dexNames[dexA];
+          longDex  = dexB; longRate  = rB; longName  = dexNames[dexB];
         } else {
-          shortDex = dexB; shortRate = rB;
-          longDex  = dexA; longRate  = rA;
+          shortDex = dexB; shortRate = rB; shortName = dexNames[dexB];
+          longDex  = dexA; longRate  = rA; longName  = dexNames[dexA];
         }
 
-        opportunities.push({ sym, shortDex, longDex, shortRate, longRate, netApy, diff: Math.abs(diff) });
+        opportunities.push({ sym, shortDex, longDex, shortRate, longRate, shortName, longName, netApy, diff: Math.abs(diff) });
       });
     });
 
@@ -2725,6 +2747,9 @@ requestAnimationFrame(animate);
       const logoImg = (src, name) => src
         ? `<img src="${src}" alt="${name}" class="tf-side-logo" onerror="this.style.display='none'">`
         : '';
+      // Always show original ticker name under DEX label
+      const shortTicker = op.shortName ? `<div class="tf-side-ticker">${op.shortName}</div>` : '';
+      const longTicker  = op.longName  ? `<div class="tf-side-ticker">${op.longName}</div>`  : '';
 
       return `<div class="tf-card">
         <div class="tf-card-top">
@@ -2740,6 +2765,7 @@ requestAnimationFrame(animate);
                 <div class="tf-side-dex">${op.shortDex}</div>
               </div>
             </div>
+            ${shortTicker}
             <div class="tf-side-rate">${shortSign}${shortPct}%</div>
           </div>
           <div class="tf-card-arrow">→</div>
@@ -2751,6 +2777,7 @@ requestAnimationFrame(animate);
                 <div class="tf-side-dex">${op.longDex}</div>
               </div>
             </div>
+            ${longTicker}
             <div class="tf-side-rate">${longSign}${longPct}%</div>
           </div>
         </div>

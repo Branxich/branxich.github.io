@@ -766,6 +766,70 @@ header {
 .tf-credit a { color: rgba(255,255,255,.25); text-decoration: none; }
 .tf-credit a:hover { color: rgba(255,255,255,.5); }
 
+.tf-hint {
+  padding: 24px;
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,.25);
+}
+.tf-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.tf-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 16px;
+  padding: 16px 18px;
+  transition: border-color .15s;
+}
+.tf-card:hover { border-color: rgba(255,255,255,.15); }
+.tf-card-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.tf-card-sym {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+.tf-card-apy {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #00eaff;
+  background: rgba(0,234,255,.1);
+  border: 1px solid rgba(0,234,255,.25);
+  border-radius: 20px;
+  padding: 3px 10px;
+}
+.tf-card-sides {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tf-card-side {
+  flex: 1;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.tf-card-side.short { background: rgba(248,113,113,.08); border: 1px solid rgba(248,113,113,.3); }
+.tf-card-side.long  { background: rgba(74,222,128,.08);  border: 1px solid rgba(74,222,128,.3); }
+.tf-side-dir { font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: .1em; }
+.tf-card-side.short .tf-side-dir { color: #f87171; }
+.tf-card-side.long  .tf-side-dir { color: #4ade80; }
+.tf-side-dex { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: rgba(255,255,255,.7); text-transform: capitalize; }
+.tf-side-rate { font-family: 'DM Mono', monospace; font-size: 14px; font-weight: 700; color: rgba(255,255,255,.9); }
+.tf-card-arrow { font-size: 16px; color: rgba(255,255,255,.2); flex-shrink: 0; }
+
 footer {
   margin-top: 72px;
   font-family: 'DM Mono', monospace;
@@ -1448,17 +1512,8 @@ footer {
         <button class="tf-dex-btn active" data-dex="aster">Aster</button>
       </div>
 
-      <div class="tf-table-wrap">
-        <table class="tf-table">
-          <thead>
-            <tr id="tfHead">
-              <th>Asset</th>
-            </tr>
-          </thead>
-          <tbody id="tfBody">
-            <tr><td colspan="7" class="hip3-loading"><div class="hip3-spinner"></div>Loading...</td></tr>
-          </tbody>
-        </table>
+      <div id="tfPairsContainer">
+        <div class="tf-hint">Загрузка данных...</div>
       </div>
       <div class="tf-credit">Funding data provided by <a href="https://loris.tools" target="_blank" rel="noopener">Loris Tools</a></div>
     </div>
@@ -2547,8 +2602,8 @@ requestAnimationFrame(animate);
 
   async function loadTreadFi() {
     if (tfLoaded) return;
-    const tbody = document.getElementById('tfBody');
-    tbody.innerHTML = '<tr><td colspan="10" class="hip3-loading"><div class="hip3-spinner"></div>Fetching funding data...</td></tr>';
+    const container = document.getElementById('tfPairsContainer');
+    container.innerHTML = '<div class="tf-hint"><div class="hip3-spinner" style="display:inline-block;margin-right:8px;"></div>Fetching funding data...</div>';
 
     try {
       const res = await fetch('https://branxi.runov-vlad37.workers.dev/loris');
@@ -2558,7 +2613,7 @@ requestAnimationFrame(animate);
       document.getElementById('tfUpdated').textContent =
         'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     } catch(e) {
-      tbody.innerHTML = `<tr><td colspan="10" class="hip3-loading">⚠ Failed to load: ${e.message}</td></tr>`;
+      container.innerHTML = `<div class="tf-hint">⚠ Failed to load: ${e.message}</div>`;
     }
   }
 
@@ -2569,73 +2624,101 @@ requestAnimationFrame(animate);
     const rates = data.funding_rates || {};
     const symbols = data.symbols || [];
 
-    // Build per-symbol rows: { symbol, entries: [{dex, rate, apy}] }
-    const rows = [];
+    const container = document.getElementById('tfPairsContainer');
+    if (!container) return;
+
+    // Need at least 2 DEXes selected to find intersections
+    if (activeDexes.length < 2) {
+      container.innerHTML = '<div class="tf-hint">Выбери минимум 2 DEX для сравнения пересечений</div>';
+      return;
+    }
+
+    // Build all pairs of DEXes
+    const pairs = [];
+    for (let i = 0; i < activeDexes.length; i++) {
+      for (let j = i + 1; j < activeDexes.length; j++) {
+        pairs.push([activeDexes[i], activeDexes[j]]);
+      }
+    }
+
+    // For each symbol, find the best pair opportunity
+    const opportunities = [];
     symbols.forEach(sym => {
-      const entries = [];
+      // Get rate for each active dex
+      const dexRates = {};
       activeDexes.forEach(dex => {
         const apiKey = TF_DEX_MAP[dex];
         if (!apiKey || !rates[apiKey]) return;
         const raw = rates[apiKey][sym];
         if (raw === undefined || raw === null) return;
-        // rate is ×10000, 1h interval for HL/Extended → already ×8 normalized by API
-        const pct = raw / 10000;      // e.g. 0.0025 = 0.25%
-        const apy = pct * 365 * 24 * 100; // annualized %
-        entries.push({ dex, pct, apy });
+        dexRates[dex] = raw / 10000;
       });
-      if (entries.length === 0) return;
-      const maxApy = Math.max(...entries.map(e => Math.abs(e.apy)));
-      rows.push({ sym, entries, maxApy });
-    });
 
-    // Sort by max abs APY, take top 10
-    rows.sort((a, b) => b.maxApy - a.maxApy);
-    const top10 = rows.slice(0, 10);
+      // For each pair, compute combined opportunity
+      pairs.forEach(([dexA, dexB]) => {
+        const rA = dexRates[dexA];
+        const rB = dexRates[dexB];
+        if (rA === undefined || rB === undefined) return;
 
-    // Build header
-    const thead = document.getElementById('tfHead');
-    thead.innerHTML = `<th>Asset</th>${activeDexes.map(d => `<th>${d}</th>`).join('')}`;
+        // Best combo: SHORT higher funding, LONG lower (or negative)
+        // Net APY = (|rA - rB|) * 24 * 365 * 100
+        const diff = rA - rB;
+        const netApy = Math.abs(diff) * 24 * 365 * 100;
+        if (netApy < 0.1) return; // skip tiny
 
-    // Build rows
-    const tbody = document.getElementById('tfBody');
-    tbody.innerHTML = '';
-
-    top10.forEach((row, idx) => {
-      const tr = document.createElement('tr');
-      // Asset cell
-      const tdA = document.createElement('td');
-      tdA.innerHTML = `<span class="tf-asset">${row.sym}</span><span class="tf-rank">#${idx+1}</span>`;
-      tr.appendChild(tdA);
-
-      // One cell per active dex
-      activeDexes.forEach(dex => {
-        const td = document.createElement('td');
-        const entry = row.entries.find(e => e.dex === dex);
-        if (!entry) {
-          td.innerHTML = `<span class="tf-cell-empty">—</span>`;
+        // Who SHORTs and who LONGs
+        let shortDex, longDex, shortRate, longRate;
+        if (rA >= rB) {
+          shortDex = dexA; shortRate = rA;
+          longDex  = dexB; longRate  = rB;
         } else {
-          const sign = entry.pct >= 0 ? '+' : '';
-          const isPos = entry.pct > 0.00001;
-          const isNeg = entry.pct < -0.00001;
-          const cls = isPos ? 'pos' : isNeg ? 'neg' : 'neu';
-          // Positive funding → SHORT earns; Negative → LONG earns
-          const dir = isPos ? 'SHORT' : isNeg ? 'LONG' : '—';
-          const apy = Math.abs(entry.apy).toFixed(0);
-          td.innerHTML = `<span class="tf-cell ${cls}">
-            <span class="tf-rate">${sign}${(entry.pct * 100).toFixed(4)}%</span>
-            <span class="tf-dir">${dir}</span>
-            <span class="tf-apy">${apy}% APY</span>
-          </span>`;
+          shortDex = dexB; shortRate = rB;
+          longDex  = dexA; longRate  = rA;
         }
-        tr.appendChild(td);
-      });
 
-      tbody.appendChild(tr);
+        opportunities.push({ sym, shortDex, longDex, shortRate, longRate, netApy, diff: Math.abs(diff) });
+      });
     });
+
+    // Sort by netApy desc, take top 10
+    opportunities.sort((a, b) => b.netApy - a.netApy);
+    const top10 = opportunities.slice(0, 10);
 
     if (top10.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="10" class="hip3-loading">No data for selected DEXes</td></tr>';
+      container.innerHTML = '<div class="tf-hint">Нет пересечений для выбранных DEX</div>';
+      return;
     }
+
+    // Render 2-column grid
+    const cards = top10.map((op, idx) => {
+      const shortPct = (op.shortRate * 100).toFixed(4);
+      const longPct  = (op.longRate  * 100).toFixed(4);
+      const apy = op.netApy.toFixed(0);
+      const shortSign = op.shortRate >= 0 ? '+' : '';
+      const longSign  = op.longRate  >= 0 ? '+' : '';
+
+      return `<div class="tf-card">
+        <div class="tf-card-top">
+          <span class="tf-card-sym">${op.sym}</span>
+          <span class="tf-card-apy">${apy}% APY</span>
+        </div>
+        <div class="tf-card-sides">
+          <div class="tf-card-side short">
+            <div class="tf-side-dir">SHORT</div>
+            <div class="tf-side-dex">${op.shortDex}</div>
+            <div class="tf-side-rate">${shortSign}${shortPct}%</div>
+          </div>
+          <div class="tf-card-arrow">→</div>
+          <div class="tf-card-side long">
+            <div class="tf-side-dir">LONG</div>
+            <div class="tf-side-dex">${op.longDex}</div>
+            <div class="tf-side-rate">${longSign}${longPct}%</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+
+    container.innerHTML = `<div class="tf-grid">${cards}</div>`;
   }
 
 })();

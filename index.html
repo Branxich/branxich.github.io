@@ -637,6 +637,135 @@ header {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 
+/* ── TreadFi DN Funding ─────────────────────────────────── */
+.tf-wrap {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto 40px;
+  background: rgba(10,10,14,.75);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 28px;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  padding: 28px 32px 32px;
+}
+.tf-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  gap: 12px;
+}
+.tf-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.5);
+  display: block;
+}
+.tf-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,.2);
+  letter-spacing: .04em;
+  margin-top: 3px;
+  display: block;
+}
+.tf-dex-filters {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+.tf-dex-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 8px 0;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all .15s;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  color: rgba(255,255,255,.3);
+  flex: 1;
+  text-align: center;
+}
+.tf-dex-btn.active {
+  background: rgba(0,234,255,.1);
+  border-color: rgba(0,234,255,.35);
+  color: #00eaff;
+}
+.tf-table-wrap { overflow-x: auto; }
+.tf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+}
+.tf-table thead th {
+  text-align: center;
+  padding: 8px 12px;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.25);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  white-space: nowrap;
+}
+.tf-table thead th:first-child { text-align: left; }
+.tf-table tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,.04);
+  transition: background .15s;
+}
+.tf-table tbody tr:last-child { border-bottom: none; }
+.tf-table tbody tr:hover { background: rgba(255,255,255,.03); }
+.tf-table tbody td {
+  padding: 10px 12px;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.tf-table tbody td:first-child { text-align: left; }
+.tf-asset { font-weight: 700; color: #fff; font-size: 15px; }
+.tf-rank { font-size: 10px; color: rgba(255,255,255,.2); margin-left: 4px; }
+.tf-cell {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  min-width: 72px;
+  gap: 3px;
+}
+.tf-cell .tf-rate { font-weight: 700; font-size: 14px; }
+.tf-cell .tf-dir  { font-size: 10px; font-weight: 700; letter-spacing: .05em; }
+.tf-cell .tf-apy  { font-size: 9px; color: rgba(255,255,255,.3); }
+.tf-cell.pos { background: rgba(74,222,128,.08);  border-color: rgba(74,222,128,.3); }
+.tf-cell.pos .tf-rate { color: #4ade80; }
+.tf-cell.pos .tf-dir  { color: rgba(74,222,128,.7); }
+.tf-cell.neg { background: rgba(248,113,113,.08); border-color: rgba(248,113,113,.3); }
+.tf-cell.neg .tf-rate { color: #f87171; }
+.tf-cell.neg .tf-dir  { color: rgba(248,113,113,.7); }
+.tf-cell.neu { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.1); }
+.tf-cell.neu .tf-rate { color: rgba(255,255,255,.3); }
+.tf-cell-empty { color: rgba(255,255,255,.12); font-size: 11px; }
+.tf-credit {
+  margin-top: 18px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,.15);
+  text-align: right;
+}
+.tf-credit a { color: rgba(255,255,255,.25); text-decoration: none; }
+.tf-credit a:hover { color: rgba(255,255,255,.5); }
+
 footer {
   margin-top: 72px;
   font-family: 'DM Mono', monospace;
@@ -1130,6 +1259,7 @@ footer {
     <div class="pill-indicator" id="pillIndicator"></div>
     <button class="pill-btn active" data-page="dex">Perp DEX List</button>
     <button class="pill-btn" data-page="airdrop">Airdrop Calculator</button>
+    <button class="pill-btn" data-page="treadfi">TreadFi DN Funding</button>
     <button class="pill-btn" data-page="hip3">HIP-3 Funding</button>
   </nav>
 
@@ -1293,6 +1423,46 @@ footer {
       </div>
     </div>
   </div><!-- /page-airdrop -->
+
+  <!-- PAGE: TreadFi DN Funding Funding -->
+  <div class="section-page" id="page-treadfi">
+    <div class="tf-wrap">
+      <div class="tf-header">
+        <div>
+          <span class="tf-title">TreadFi DN Funding Funding</span>
+          <span class="tf-sub">Top 10 by APY · select DEXes to compare</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button class="hip3-refresh" id="tfRefresh">↻ Refresh</button>
+          <span class="hip3-updated" id="tfUpdated">—</span>
+        </div>
+      </div>
+
+      <!-- DEX toggles -->
+      <div class="tf-dex-filters" id="tfFilters">
+        <button class="tf-dex-btn active" data-dex="extended">Extended</button>
+        <button class="tf-dex-btn active" data-dex="nado">Nado</button>
+        <button class="tf-dex-btn active" data-dex="paradex">Paradex</button>
+        <button class="tf-dex-btn active" data-dex="pacifica">Pacifica</button>
+        <button class="tf-dex-btn active" data-dex="hyperliquid">Hyperliquid</button>
+        <button class="tf-dex-btn active" data-dex="aster">Aster</button>
+      </div>
+
+      <div class="tf-table-wrap">
+        <table class="tf-table">
+          <thead>
+            <tr id="tfHead">
+              <th>Asset</th>
+            </tr>
+          </thead>
+          <tbody id="tfBody">
+            <tr><td colspan="7" class="hip3-loading"><div class="hip3-spinner"></div>Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tf-credit">Funding data provided by <a href="https://loris.tools" target="_blank" rel="noopener">Loris Tools</a></div>
+    </div>
+  </div><!-- /page-treadfi -->
 
   <!-- PAGE: HIP-3 Funding -->
   <div class="section-page" id="page-hip3">
@@ -2161,21 +2331,30 @@ requestAnimationFrame(animate);
     indicator.style.transform = `translateX(${btn.offsetLeft - 5}px)`;
   }
 
-  // Init position
-  moveIndicator(btns[0]);
+  function switchPage(page) {
+    const btn = [...btns].find(b => b.dataset.page === page) || btns[0];
+    btns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    moveIndicator(btn);
+    document.querySelectorAll('.section-page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + btn.dataset.page).classList.add('active');
+    if (btn.dataset.page === 'hip3') loadHip3();
+      if (btn.dataset.page === 'treadfi') loadTreadFi();
+    // Update URL hash without scrolling
+    // history.replaceState removed — not supported in iframe context
+  }
+
+  // Init from hash or default
+  const initPage = location.hash.replace('#', '') || 'dex';
+  switchPage(initPage);
 
   btns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      btns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      moveIndicator(btn);
+    btn.addEventListener('click', () => switchPage(btn.dataset.page));
+  });
 
-      const pageId = 'page-' + btn.dataset.page;
-      document.querySelectorAll('.section-page').forEach(p => p.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
-
-      if (btn.dataset.page === 'hip3') loadHip3();
-    });
+  // Handle back/forward browser navigation
+  window.addEventListener('hashchange', () => {
+    switchPage(location.hash.replace('#', '') || 'dex');
   });
 
   // ── HIP-3 Funding ───────────────────────────────────────
@@ -2337,6 +2516,128 @@ requestAnimationFrame(animate);
       tbody.innerHTML = `<tr><td colspan="6" class="hip3-loading">⚠ Не удалось загрузить данные.<br><span style="font-size:10px;opacity:.5;">${e.message}</span></td></tr>`;
     }
   }
+
+  // ── TreadFi DN Funding Funding ──────────────────────────────────────────
+  // Map our button data-dex values to Loris API exchange names
+  const TF_DEX_MAP = {
+    extended:    'extended',
+    nado:        'nado',
+    paradex:     'paradex',
+    pacifica:    'pacifica',
+    hyperliquid: 'hyperliquid',
+    aster:       'aster',
+  };
+
+  let tfData = null;
+  let tfLoaded = false;
+
+  // Toggle DEX filter buttons
+  document.getElementById('tfFilters').addEventListener('click', e => {
+    const btn = e.target.closest('.tf-dex-btn');
+    if (!btn) return;
+    btn.classList.toggle('active');
+    if (tfData) renderTreadFi(tfData);
+  });
+
+  document.getElementById('tfRefresh').addEventListener('click', async () => {
+    if (!document.getElementById('page-treadfi').classList.contains('active')) return;
+    tfLoaded = false;
+    await loadTreadFi();
+  });
+
+  async function loadTreadFi() {
+    if (tfLoaded) return;
+    const tbody = document.getElementById('tfBody');
+    tbody.innerHTML = '<tr><td colspan="10" class="hip3-loading"><div class="hip3-spinner"></div>Fetching funding data...</td></tr>';
+
+    try {
+      const res = await fetch('https://api.loris.tools/funding');
+      tfData = await res.json();
+      tfLoaded = true;
+      renderTreadFi(tfData);
+      document.getElementById('tfUpdated').textContent =
+        'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch(e) {
+      tbody.innerHTML = `<tr><td colspan="10" class="hip3-loading">⚠ Failed to load: ${e.message}</td></tr>`;
+    }
+  }
+
+  function renderTreadFi(data) {
+    const activeDexes = Array.from(document.querySelectorAll('.tf-dex-btn.active'))
+      .map(b => b.dataset.dex);
+
+    const rates = data.funding_rates || {};
+    const symbols = data.symbols || [];
+
+    // Build per-symbol rows: { symbol, entries: [{dex, rate, apy}] }
+    const rows = [];
+    symbols.forEach(sym => {
+      const entries = [];
+      activeDexes.forEach(dex => {
+        const apiKey = TF_DEX_MAP[dex];
+        if (!apiKey || !rates[apiKey]) return;
+        const raw = rates[apiKey][sym];
+        if (raw === undefined || raw === null) return;
+        // rate is ×10000, 1h interval for HL/Extended → already ×8 normalized by API
+        const pct = raw / 10000;      // e.g. 0.0025 = 0.25%
+        const apy = pct * 365 * 24 * 100; // annualized %
+        entries.push({ dex, pct, apy });
+      });
+      if (entries.length === 0) return;
+      const maxApy = Math.max(...entries.map(e => Math.abs(e.apy)));
+      rows.push({ sym, entries, maxApy });
+    });
+
+    // Sort by max abs APY, take top 10
+    rows.sort((a, b) => b.maxApy - a.maxApy);
+    const top10 = rows.slice(0, 10);
+
+    // Build header
+    const thead = document.getElementById('tfHead');
+    thead.innerHTML = `<th>Asset</th>${activeDexes.map(d => `<th>${d}</th>`).join('')}`;
+
+    // Build rows
+    const tbody = document.getElementById('tfBody');
+    tbody.innerHTML = '';
+
+    top10.forEach((row, idx) => {
+      const tr = document.createElement('tr');
+      // Asset cell
+      const tdA = document.createElement('td');
+      tdA.innerHTML = `<span class="tf-asset">${row.sym}</span><span class="tf-rank">#${idx+1}</span>`;
+      tr.appendChild(tdA);
+
+      // One cell per active dex
+      activeDexes.forEach(dex => {
+        const td = document.createElement('td');
+        const entry = row.entries.find(e => e.dex === dex);
+        if (!entry) {
+          td.innerHTML = `<span class="tf-cell-empty">—</span>`;
+        } else {
+          const sign = entry.pct >= 0 ? '+' : '';
+          const isPos = entry.pct > 0.00001;
+          const isNeg = entry.pct < -0.00001;
+          const cls = isPos ? 'pos' : isNeg ? 'neg' : 'neu';
+          // Positive funding → SHORT earns; Negative → LONG earns
+          const dir = isPos ? 'SHORT' : isNeg ? 'LONG' : '—';
+          const apy = Math.abs(entry.apy).toFixed(0);
+          td.innerHTML = `<span class="tf-cell ${cls}">
+            <span class="tf-rate">${sign}${(entry.pct * 100).toFixed(4)}%</span>
+            <span class="tf-dir">${dir}</span>
+            <span class="tf-apy">${apy}% APY</span>
+          </span>`;
+        }
+        tr.appendChild(td);
+      });
+
+      tbody.appendChild(tr);
+    });
+
+    if (top10.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="10" class="hip3-loading">No data for selected DEXes</td></tr>';
+    }
+  }
+
 })();
 
 </script>

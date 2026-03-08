@@ -1547,7 +1547,7 @@ footer {
       <div class="tf-header">
         <div>
           <span class="tf-title">TreadFi DN Funding Funding</span>
-          <span class="tf-sub">Top 10 by APY · select DEXes to compare</span>
+          <span class="tf-sub">Top 20 by APY · select DEXes to compare</span>
         </div>
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
           <div class="tf-mode-toggle">
@@ -2808,9 +2808,9 @@ requestAnimationFrame(animate);
       });
     });
 
-    // Sort by netApy desc, take top 10
+    // Sort by netApy desc, take top 20
     opportunities.sort((a, b) => b.netApy - a.netApy);
-    const top10 = opportunities.slice(0, 10);
+    const top10 = opportunities.slice(0, 20);
 
     if (top10.length === 0) {
       container.innerHTML = '<div class="tf-hint">Нет пересечений для выбранных DEX</div>';

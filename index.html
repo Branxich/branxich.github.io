@@ -766,6 +766,38 @@ header {
 .tf-credit a { color: rgba(255,255,255,.25); text-decoration: none; }
 .tf-credit a:hover { color: rgba(255,255,255,.5); }
 
+.tf-mode-toggle {
+  display: flex;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 3px;
+}
+.tf-mode-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  padding: 5px 14px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  transition: all .15s;
+  background: none;
+  color: rgba(255,255,255,.35);
+}
+.tf-mode-btn.active {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+}
+.tf-24h-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: rgba(255,255,255,.2);
+  margin-top: 2px;
+  text-align: center;
+}
 .tf-hint {
   padding: 24px;
   text-align: center;
@@ -1517,7 +1549,11 @@ footer {
           <span class="tf-title">TreadFi DN Funding Funding</span>
           <span class="tf-sub">Top 10 by APY · select DEXes to compare</span>
         </div>
-        <div style="display:flex;align-items:center;gap:12px;">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <div class="tf-mode-toggle">
+            <button class="tf-mode-btn active" id="tfModeCurrent">Current</button>
+            <button class="tf-mode-btn" id="tfMode24h">24h Avg</button>
+          </div>
           <button class="hip3-refresh" id="tfRefresh">↻ Refresh</button>
           <span class="hip3-updated" id="tfUpdated">—</span>
         </div>
@@ -2617,7 +2653,24 @@ requestAnimationFrame(animate);
   };
 
   let tfData = null;
+  let tfAvgData = null;
   let tfLoaded = false;
+  let tfMode = 'current'; // 'current' | '24h'
+
+  document.getElementById('tfModeCurrent').addEventListener('click', () => {
+    tfMode = 'current';
+    document.getElementById('tfModeCurrent').classList.add('active');
+    document.getElementById('tfMode24h').classList.remove('active');
+    if (tfData) renderTreadFi(tfMode === '24h' && tfAvgData ? tfAvgData : tfData);
+  });
+
+  document.getElementById('tfMode24h').addEventListener('click', async () => {
+    tfMode = '24h';
+    document.getElementById('tfMode24h').classList.add('active');
+    document.getElementById('tfModeCurrent').classList.remove('active');
+    if (!tfAvgData) await loadTreadFi24h();
+    else renderTreadFi(tfAvgData);
+  });
 
   // Toggle DEX filter buttons
   document.getElementById('tfFilters').addEventListener('click', e => {
@@ -2630,7 +2683,9 @@ requestAnimationFrame(animate);
   document.getElementById('tfRefresh').addEventListener('click', async () => {
     if (!document.getElementById('page-treadfi').classList.contains('active')) return;
     tfLoaded = false;
-    await loadTreadFi();
+    tfAvgData = null;
+    if (tfMode === '24h') await loadTreadFi24h();
+    else await loadTreadFi();
   });
 
   async function loadTreadFi() {
@@ -2650,7 +2705,32 @@ requestAnimationFrame(animate);
     }
   }
 
-  function renderTreadFi(data) {
+  async function loadTreadFi24h() {
+    const container = document.getElementById('tfPairsContainer');
+    container.innerHTML = '<div class="tf-hint"><div class="hip3-spinner" style="display:inline-block;margin-right:8px;"></div>Loading 24h average...</div>';
+    try {
+      const res = await fetch('https://branxi.runov-vlad37.workers.dev/funding-history');
+      const json = await res.json();
+
+      if (!json.avg || Object.keys(json.avg).length === 0) {
+        // Not enough data yet — fall back to current with note
+        container.innerHTML = '<div class="tf-hint">⏳ Накапливаем данные... 24h среднее будет готово через ' + (24 - (json.count || 0)) + 'ч.<br><span style="opacity:.5;font-size:10px;">Собрано точек: ' + (json.count || 0) + '/24</span></div>';
+        return;
+      }
+
+      // Build same structure as /loris response so renderTreadFi works
+      const symbols = [...new Set(Object.values(json.avg).flatMap(d => Object.keys(d)))];
+      tfAvgData = { funding_rates: json.avg, symbols, _is24h: true, _count: json.count };
+      const oldest = json.oldest ? new Date(json.oldest).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '?';
+      const newest = json.newest ? new Date(json.newest).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '?';
+      document.getElementById('tfUpdated').textContent = `24h avg · ${json.count} точек · ${oldest}–${newest}`;
+      renderTreadFi(tfAvgData);
+    } catch(e) {
+      container.innerHTML = `<div class="tf-hint">⚠ Failed to load 24h data: ${e.message}</div>`;
+    }
+  }
+
+    function renderTreadFi(data) {
     const activeDexes = Array.from(document.querySelectorAll('.tf-dex-btn.active'))
       .map(b => b.dataset.dex);
 

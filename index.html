@@ -2714,7 +2714,7 @@ requestAnimationFrame(animate);
 
       if (!json.avg || Object.keys(json.avg).length === 0) {
         // Not enough data yet — fall back to current with note
-        container.innerHTML = '<div class="tf-hint">⏳ Накапливаем данные... 24h среднее будет готово через ' + (24 - (json.count || 0)) + 'ч.<br><span style="opacity:.5;font-size:10px;">Собрано точек: ' + (json.count || 0) + '/24</span></div>';
+        container.innerHTML = '<div class="tf-hint">⏳ Collecting data... 24h average will be ready in ' + (24 - (json.count || 0)) + 'h.<br><span style="opacity:.5;font-size:10px;">Snapshots collected: ' + (json.count || 0) + '/24</span></div>';
         return;
       }
 
@@ -2723,7 +2723,7 @@ requestAnimationFrame(animate);
       tfAvgData = { funding_rates: json.avg, symbols, _is24h: true, _count: json.count };
       const oldest = json.oldest ? new Date(json.oldest).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '?';
       const newest = json.newest ? new Date(json.newest).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) : '?';
-      document.getElementById('tfUpdated').textContent = `24h avg · ${json.count} точек · ${oldest}–${newest}`;
+      document.getElementById('tfUpdated').textContent = `24h avg · ${json.count} snapshots · ${oldest}–${newest}`;
       renderTreadFi(tfAvgData);
     } catch(e) {
       container.innerHTML = `<div class="tf-hint">⚠ Failed to load 24h data: ${e.message}</div>`;

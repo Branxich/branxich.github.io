@@ -766,6 +766,73 @@ header {
 .tf-credit a { color: rgba(255,255,255,.25); text-decoration: none; }
 .tf-credit a:hover { color: rgba(255,255,255,.5); }
 
+/* ── TreadFi CTA Banner ─────────────────────────────── */
+.tf-cta-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, rgba(0,234,255,.08) 0%, rgba(0,180,200,.04) 100%);
+  border: 1px solid rgba(0,234,255,.2);
+  border-radius: 18px;
+  padding: 18px 22px;
+  margin-bottom: 20px;
+  text-decoration: none;
+  transition: all .2s;
+  gap: 16px;
+}
+.tf-cta-banner:hover {
+  background: linear-gradient(135deg, rgba(0,234,255,.13) 0%, rgba(0,180,200,.07) 100%);
+  border-color: rgba(0,234,255,.4);
+}
+.tf-cta-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+.tf-cta-logo {
+  height: 36px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.tf-cta-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.tf-cta-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.tf-cta-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,.4);
+  letter-spacing: .03em;
+}
+.tf-cta-btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #00eaff;
+  background: rgba(0,234,255,.12);
+  border: 1px solid rgba(0,234,255,.3);
+  border-radius: 20px;
+  padding: 10px 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all .2s;
+}
+.tf-cta-banner:hover .tf-cta-btn {
+  background: rgba(0,234,255,.22);
+  border-color: rgba(0,234,255,.55);
+}
+
 .tf-mode-toggle {
   display: flex;
   background: rgba(255,255,255,.05);
@@ -1544,9 +1611,21 @@ footer {
   <!-- PAGE: TreadFi DN Funding Funding -->
   <div class="section-page" id="page-treadfi">
     <div class="tf-wrap">
-      <div class="tf-header">
+      <!-- CTA Banner -->
+      <a href="https://app.tread.fi/referral/7WG1VZXC" target="_blank" rel="noopener" class="tf-cta-banner">
+        <div class="tf-cta-left">
+          <img src="assets/logo_treadfi_hor.png" alt="TreadFi" class="tf-cta-logo" onerror="this.style.display='none'">
+          <div class="tf-cta-text">
+            <div class="tf-cta-title">Start farming DN funding now</div>
+            <div class="tf-cta-sub">Delta-neutral bot · auto-rebalancing · earn from funding spreads 24/7 · no directional risk</div>
+          </div>
+        </div>
+        <div class="tf-cta-btn">Launch Bot →</div>
+      </a>
+
+            <div class="tf-header">
         <div>
-          <span class="tf-title">TreadFi DN Funding Funding</span>
+          <span class="tf-title">TreadFi DN Funding</span>
           <span class="tf-sub">Top 20 by APY · select DEXes to compare</span>
         </div>
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
